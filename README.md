@@ -34,6 +34,21 @@ No global `dotnet test` setup needed — each exercise is its own project.
 | 19 | [`19_indexers_operators`](exercises/19_indexers_operators) | Indexers (`this[...]`), operator overloading | `Matrix` with `+`, `*`, `==` |
 | 20 | [`20_attributes_reflection`](exercises/20_attributes_reflection) | Custom attributes, `PropertyInfo`, reflection | `[Validate]` + `FormValidator.Validate<T>` |
 
+## Track 2 — Internals & Runtime (21–30)
+
+| # | Exercise | Concept | Key technique |
+|---|----------|---------|---------------|
+| 21 | [`21_struct_vs_class`](exercises/21_struct_vs_class) | Value types vs reference types, stack vs heap | `struct` vs `class`, assignment semantics |
+| 22 | [`22_boxing_unboxing`](exercises/22_boxing_unboxing) | Boxing (value → `object`), heap allocation, generics avoid boxing | `ArrayList` vs `List<T>` |
+| 23 | [`23_ref_out_in_parameters`](exercises/23_ref_out_in_parameters) | `ref`, `out`, `in` — pass by reference | `TryParse` pattern, `Swap`, read-only ref |
+| 24 | [`24_idisposable_and_gc`](exercises/24_idisposable_and_gc) | `IDisposable`, `using`, finalizers | Dispose pattern, `GC.SuppressFinalize` |
+| 25 | [`25_readonly_struct`](exercises/25_readonly_struct) | Immutable value types, mutable-struct gotcha | `readonly struct`, `init` properties |
+| 26 | [`26_string_internals`](exercises/26_string_internals) | String immutability, interning, `StringBuilder` | `string.Intern`, `ReferenceEquals` |
+| 27 | [`27_span_and_memory`](exercises/27_span_and_memory) | Zero-allocation slices, `stackalloc`, `Memory<T>` | `Span<T>`, `AsSpan`, `stackalloc` |
+| 28 | [`28_gc_internals`](exercises/28_gc_internals) | GC generations, LOH (≥85 KB), `WeakReference<T>` | `GC.GetGeneration`, `WeakReference<T>` |
+| 29 | [`29_async_state_machine`](exercises/29_async_state_machine) | Compiler-generated state machine, `Task.WhenAll` | `async`/`await`, concurrent vs sequential |
+| 30 | [`30_lambda_captures`](exercises/30_lambda_captures) | Display classes on heap, late-binding bug | Closure capture, `captured = i` fix |
+
 ## Daily workflow
 
 1. Pick an exercise from the table above.
