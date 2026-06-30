@@ -9,14 +9,13 @@ using System.Text;
 // string.IsInterned(s) returns the interned version or null.
 // Use StringBuilder for O(n) concatenation instead of O(n²) + operator.
 //
-// Implement:
-//   public static class StringInternals {
-//       public static bool ContentEqual(string a, string b);    // a == b
-//       public static bool ReferenceEqual(string a, string b);  // ReferenceEquals(a, b)
-//       public static string InternString(string s);             // string.Intern(s)
-//       public static bool IsInterned(string s);                 // string.IsInterned(s) != null
-//       public static string ConcatWithPlus(int n);              // += in a loop
-//       public static string ConcatWithBuilder(int n);           // StringBuilder.Append in loop
-//   }
+// Implement (all in static class StringInternals):
+//   ContentEqual(string a, string b) → bool — true if both strings have the same content.
+//   ReferenceEqual(string a, string b) → bool — true if both variables point to the
+//       same object in memory.
+//   InternString(string s) → string — ensures s is in the intern pool and returns it.
+//   IsInterned(string s) → bool — true if s is already in the intern pool.
+//   ConcatWithPlus(int n) → string — concatenate "0" through "{n-1}" using + in a loop.
+//   ConcatWithBuilder(int n) → string — same but using the efficient mutable builder type.
 
 // Write your implementation below.

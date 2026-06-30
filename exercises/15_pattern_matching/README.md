@@ -8,29 +8,23 @@
 
 Shape hierarchy (Circle, Rectangle, Triangle as abstract records) with an `Area(Shape)` function using positional patterns. A `Classify(int)` function using relational patterns.
 
-## Required API
+## Required types and behavior
 
-```csharp
-abstract record Shape;
-record Circle(double Radius) : Shape;
-record Rectangle(double Width, double Height) : Shape;
-record Triangle(double A, double B, double C) : Shape;
+- **Shape** — base type; cannot be instantiated directly; uses value equality; supports deconstruction in pattern matching.
+- **Circle : Shape** — one component: Radius (double).
+- **Rectangle : Shape** — two components: Width, Height (double).
+- **Triangle : Shape** — three components: A, B, C (double) — side lengths.
 
-static class ShapeMath
-{
-    public static double Area(Shape shape)
-    // Circle(r)     => Math.PI * r * r
-    // Rectangle(w,h) => w * h
-    // Triangle      => Heron's formula: s=(a+b+c)/2, sqrt(s*(s-a)*(s-b)*(s-c))
-    // _             => throw new ArgumentException("Unknown shape")
+Note: use C#'s concise immutable data type syntax. The base Shape should not be directly instantiable.
 
-    public static string Classify(int n)
-    // < 0   => "negative"
-    // 0     => "zero"
-    // 1..9  => "small"
-    // >= 10 => "large"
-}
-```
+- **ShapeMath** — static class:
+  - `Area(Shape)` → double — dispatches on shape type using positional patterns:
+    - Circle: `Math.PI * r * r`
+    - Rectangle: `w * h`
+    - Triangle: Heron's formula — `s=(a+b+c)/2; sqrt(s*(s-a)*(s-b)*(s-c))`
+    - unknown: throw `ArgumentException`
+  - `Classify(int)` → string — using relational patterns:
+    - `< 0` → `"negative"`, `0` → `"zero"`, `1–9` → `"small"`, `>= 10` → `"large"`
 
 ## Things to watch for
 

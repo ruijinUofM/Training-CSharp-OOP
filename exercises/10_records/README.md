@@ -8,20 +8,19 @@
 
 `Point(X, Y)` — a record with a `DistanceTo` method. `Color(R, G, B)` — a `record struct` with a `ToHex()` method.
 
-## Required API
+## Required types and behavior
 
-```csharp
-record Point(double X, double Y)
-{
-    public double DistanceTo(Point other)
-    // Math.Sqrt((X - other.X)^2 + (Y - other.Y)^2)
-}
+- **Point** — a REFERENCE type with two double coordinates (X, Y).
+  - Uses value equality: two Points with identical coordinates are equal.
+  - Supports non-destructive mutation (create a copy with one field changed).
+  - Supports deconstruction: `var (x, y) = somePoint;`
+  - `DistanceTo(Point other)` → double — Euclidean distance.
 
-record struct Color(byte R, byte G, byte B)
-{
-    public string ToHex() => $"#{R:X2}{G:X2}{B:X2}";
-}
-```
+- **Color** — a VALUE type (not a reference type) with three byte components (R, G, B).
+  - Also uses value equality and supports non-destructive mutation.
+  - `ToHex()` → string — returns `"#RRGGBB"` in uppercase hex.
+
+Note: look up the C# syntax for declaring immutable data types with auto-generated equality, `ToString`, and deconstruction — for both reference and value variants.
 
 ## Things to watch for
 

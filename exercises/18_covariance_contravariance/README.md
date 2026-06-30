@@ -8,26 +8,26 @@ Generic variance: `out T` (covariant — producer), `in T` (contravariant — co
 
 `IProducer<out T>` (covariant) and `IConsumer<in T>` (contravariant) interfaces. `DogProducer : IProducer<Dog>` can be assigned to `IProducer<Animal>` because `out T` means "I only produce T, never consume it." `AnimalConsumer : IConsumer<Animal>` can be assigned to `IConsumer<Dog>` because `in T` means "I only consume T."
 
-## Required API
+## Required classes and behavior
 
-```csharp
-class Animal { public string Name { get; } public Animal(string name) }
-class Dog : Animal { public Dog(string name) : base(name) { } }
+- **Animal** — `Name` (string) read-only; set via constructor.
+- **Dog : Animal** — passes name up to Animal's constructor.
 
-interface IProducer<out T>  { T Produce(); }
-interface IConsumer<in T>   { void Consume(T item); }
+- **IProducer&lt;T&gt;** — contract with one method: `Produce()` → T.
+  - T only appears in output (return) positions.
+  - This means an `IProducer<Dog>` can be assigned to `IProducer<Animal>`.
+  - C# requires a specific keyword on the type parameter to enable this.
 
-class DogProducer : IProducer<Dog>
-{
-    public Dog Produce() => new Dog("Rex");
-}
+- **IConsumer&lt;T&gt;** — contract with one method: `Consume(T item)`.
+  - T only appears in input (parameter) positions.
+  - This means an `IConsumer<Animal>` can be assigned to `IConsumer<Dog>`.
+  - C# requires a specific keyword on the type parameter to enable this.
 
-class AnimalConsumer : IConsumer<Animal>
-{
-    public List<string> Consumed { get; } = new();
-    public void Consume(Animal a) => Consumed.Add(a.Name);
-}
-```
+- **DogProducer** — fulfills `IProducer<Dog>`; `Produce()` returns `new Dog("Rex")`.
+
+- **AnimalConsumer** — fulfills `IConsumer<Animal>`.
+  - `Consumed` (List&lt;string&gt;) — tracks names of consumed animals.
+  - `Consume(Animal)` — appends the animal's Name to Consumed.
 
 ## Things to watch for
 

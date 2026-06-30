@@ -8,27 +8,18 @@
 
 A `Max<T>` method (requires `IComparable<T>`), a `Repository<T>` class (requires `class, new()`), and an `AreEqual<T>` method (requires `struct`).
 
-## Required API
+## Required classes and behavior
 
-```csharp
-static class Algorithms
-{
-    public static T Max<T>(T a, T b) where T : IComparable<T>
-    // returns whichever is greater
+- **Algorithms** — static class with generic helper methods.
+  - `Max(a, b)` → T — returns whichever is greater; T must support comparison against itself.
+  - `AreEqual(a, b)` → bool — returns `a.Equals(b)`; T must be a value type (not a reference type).
 
-    public static bool AreEqual<T>(T a, T b) where T : struct
-    // returns a.Equals(b)
-}
-
-class Repository<T> where T : class, new()
-{
-    private readonly List<T> _items = new();
-    public T Create()          // returns new T()
-    public void Add(T item)
-    public List<T> FindAll()   // returns copy or same list
-    public int Count { get; }
-}
-```
+- **Repository** — a generic collection class.
+  - T must be a reference type AND must have a parameterless constructor.
+  - `Create()` → T — returns a new instance of T using its default constructor.
+  - `Add(item)` — adds an item to the internal list.
+  - `FindAll()` → `List<T>` — returns the stored items.
+  - `Count` (int) — number of items stored.
 
 ## Things to watch for
 

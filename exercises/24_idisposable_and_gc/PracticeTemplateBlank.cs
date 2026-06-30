@@ -9,19 +9,19 @@ using Xunit;
 // Call GC.SuppressFinalize(this) in Dispose() to skip unnecessary finalization.
 //
 // Implement:
-//   public class DisposableLog : IDisposable {
-//       public bool IsDisposed { get; private set; }
-//       public static List<string> Log { get; } = new();
-//       public string Name { get; }
-//       public DisposableLog(string name);  // Name = name
-//       public void Dispose();              // IsDisposed = true; Log.Add($"disposed:{Name}");
-//       public static void ResetLog();      // Log.Clear();
-//   }
-//   public static class DisposeDemos {
-//       public static void UseWithUsing(string name);
-//           // using (var r = new DisposableLog(name)) { }
-//       public static bool IsDisposedAfterUsing(string name);
-//           // DisposableLog r; using (r = new DisposableLog(name)) { } return r.IsDisposed;
-//   }
+//
+//   DisposableLog — fulfills the standard deterministic cleanup contract (IDisposable).
+//       IsDisposed (bool) — readable from outside; only settable from within the class.
+//       Log (static List<string>) — shared log of disposal events; reference is read-only.
+//       Name (string) — read-only; set in constructor.
+//       DisposableLog(string name) — constructor.
+//       Dispose() — sets IsDisposed to true; appends "disposed:{Name}" to Log.
+//       ResetLog() — static; clears Log.
+//
+//   DisposeDemos — static class:
+//       UseWithUsing(string name) — creates a DisposableLog in a block that guarantees
+//           Dispose() is called on exit (even if an exception is thrown).
+//       IsDisposedAfterUsing(string name) → bool — demonstrates that the object is
+//           disposed after the block ends; returns true.
 
 // Write your implementation below.

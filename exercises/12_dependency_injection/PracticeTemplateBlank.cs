@@ -1,27 +1,22 @@
 // Dependency Injection -- NotificationService + FakeEmailSender, written from scratch.
 //
-// Required API:
+// Required classes and behavior:
 //
-//   interface IEmailSender { void Send(string to, string subject, string body); }
+//   IEmailSender — contract: Send(string to, string subject, string body).
 //
-//   class FakeEmailSender : IEmailSender
-//   {
-//       public List<(string To, string Subject, string Body)> Sent { get; } = new();
-//       public void Send(...)  // appends to Sent
-//   }
+//   FakeEmailSender — fulfills IEmailSender for testing.
+//       Sent — a list of (To, Subject, Body) tuples capturing every call to Send.
+//       Send(...) — appends to Sent (no real email is sent).
 //
-//   class ConsoleEmailSender : IEmailSender
-//   {
-//       public void Send(...)  // Console.WriteLine to stdout
-//   }
+//   ConsoleEmailSender — fulfills IEmailSender for real use.
+//       Send(...) — writes to stdout (e.g., "To: {to} | {subject}").
 //
-//   class NotificationService
-//   {
-//       public NotificationService(IEmailSender sender)
-//       public void NotifyUser(string email, string eventName)
-//           // Subject = "Notification: {eventName}"
-//           // Body    = "You have a new event: {eventName}"
-//   }
+//   NotificationService — uses IEmailSender without knowing which implementation.
+//       Constructor receives an IEmailSender (injected by the caller, not created here).
+//       The sender is stored and cannot be reassigned after construction.
+//       NotifyUser(string email, string eventName) — calls Send with:
+//           Subject = "Notification: {eventName}"
+//           Body    = "You have a new event: {eventName}"
 //
 // Key principle: NotificationService does NOT create a sender internally.
 

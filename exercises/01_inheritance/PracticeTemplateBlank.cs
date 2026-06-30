@@ -1,27 +1,21 @@
 // Inheritance -- Animal/Dog/Cat, written from scratch.
 //
-// Required API:
+// Required classes and behavior:
 //
-//   class Animal
-//   {
-//       public string Name { get; }
-//       public Animal(string name)
-//       public virtual string Speak()    // "..."
-//       public virtual string Describe() // "I am {Name}"
-//   }
+//   Animal — base class.
+//       Name (string) — read-only; set via constructor.
+//       Speak() → string — returns "..."; subclasses may optionally provide
+//           their own version.
+//       Describe() → string — returns "I am {Name}"; subclasses may optionally
+//           provide their own version.
 //
-//   class Dog : Animal
-//   {
-//       public Dog(string name) : base(name)
-//       public override string Speak()   // "Woof!"
-//   }
+//   Dog : Animal — inherits Animal; passes name up to Animal's constructor.
+//       Speak() — returns "Woof!" (its own version, replacing Animal's).
+//       Describe() — uses Animal's version (no change needed).
 //
-//   class Cat : Animal
-//   {
-//       public Cat(string name) : base(name)
-//       public override string Speak()   // "Meow!"
-//       public override string Describe() // "I am {Name}, a mysterious cat"
-//   }
+//   Cat : Animal — inherits Animal; passes name up to Animal's constructor.
+//       Speak() — returns "Meow!" (its own version).
+//       Describe() — returns "I am {Name}, a mysterious cat" (its own version).
 
 namespace Kata;
 

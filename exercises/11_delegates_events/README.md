@@ -8,22 +8,18 @@
 
 A `Button` with an `event EventHandler? Clicked` and a `Click()` method that fires it. A `Counter` with `event Action<int>? CountChanged` that fires with the new count on each `Increment()`.
 
-## Required API
+## Required classes and behavior
 
-```csharp
-class Button
-{
-    public event EventHandler? Clicked;
-    public void Click()   // raises Clicked
-}
+- **Button**:
+  - `Clicked` — a notification that fires when `Click()` is called. Subscribers receive the sender (the Button) and an EventArgs. Uses the standard .NET event handler delegate shape.
+  - `Click()` — raises the Clicked notification to all subscribers.
 
-class Counter
-{
-    public int Count { get; private set; }
-    public event Action<int>? CountChanged;
-    public void Increment()   // Count++, then raises CountChanged with new Count
-}
-```
+- **Counter**:
+  - `Count` (int) — readable from outside; only changeable from within the class.
+  - `CountChanged` — a notification that fires after each `Increment()`; subscribers receive the new Count value as an int.
+  - `Increment()` — increments Count by 1, then fires CountChanged with the new value.
+
+Note: C# has a specific keyword for declaring observable notifications on a class. Callers subscribe with `+=` and unsubscribe with `-=`. Firing safely when no subscribers are attached requires a null-conditional call.
 
 ## Things to watch for
 

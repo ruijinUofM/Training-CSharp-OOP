@@ -70,20 +70,14 @@ public class ManagedResource : IDisposable
 
 ## Required implementation
 
-```csharp
-public class DisposableLog : IDisposable
-{
-    public bool IsDisposed { get; private set; }
-    public static List<string> Log { get; } = new();
-    public string Name { get; }
-    public DisposableLog(string name);
-    public void Dispose();  // sets IsDisposed = true, logs "disposed:{Name}"
-}
-public static class DisposeDemos
-{
-    public static void UseWithUsing(string name);
-        // create DisposableLog inside a using block — it's disposed on exit
-    public static bool IsDisposedAfterUsing(string name);
-        // return true (the using block disposed it)
-}
-```
+- **DisposableLog** — fulfills the standard deterministic cleanup contract (IDisposable).
+  - `IsDisposed` (bool) — readable from outside; only settable from within the class.
+  - `Log` (static `List<string>`) — shared log of disposal events; the reference is read-only.
+  - `Name` (string) — read-only; set in constructor.
+  - `DisposableLog(string name)` — constructor.
+  - `Dispose()` — sets IsDisposed to true; appends `"disposed:{Name}"` to Log.
+  - `ResetLog()` — static; clears Log.
+
+- **DisposeDemos** — static class:
+  - `UseWithUsing(string name)` — creates a DisposableLog in a block that guarantees Dispose() is called on exit (even on exception).
+  - `IsDisposedAfterUsing(string name)` → bool — demonstrates the object is disposed after the block ends; returns true.

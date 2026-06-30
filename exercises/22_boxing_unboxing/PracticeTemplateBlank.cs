@@ -6,14 +6,15 @@ using Xunit;
 // Unboxing: (int)obj copies the value back out.
 // Generics (List<int>) avoid boxing; ArrayList boxes everything.
 //
-// Implement:
-//   public static class BoxingDemos {
-//       public static object BoxInt(int value);
-//       public static int UnboxInt(object obj);
-//       public static System.Collections.ArrayList BoxMany(IEnumerable<int> values);
-//       public static List<int> NoBoxing(IEnumerable<int> values);
-//       public static Type GetBoxedType(object obj);
-//       public static bool IsBoxedInt(object obj);
-//   }
+// Implement (all in static class BoxingDemos):
+//   BoxInt(int value) → object — returns the int as an object (triggers boxing).
+//   UnboxInt(object obj) → int — extracts the int from the boxed object
+//       (throws if the object is not a boxed int).
+//   BoxMany(IEnumerable<int> values) → ArrayList — adds all ints to a
+//       non-generic collection (each insertion triggers boxing).
+//   NoBoxing(IEnumerable<int> values) → List<int> — same but using the
+//       generic collection (no boxing).
+//   GetBoxedType(object obj) → Type — the runtime type of the boxed value.
+//   IsBoxedInt(object obj) → bool — true if the object holds a boxed int.
 
 // Write your implementation below.

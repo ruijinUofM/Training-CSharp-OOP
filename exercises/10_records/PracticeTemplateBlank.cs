@@ -1,22 +1,20 @@
 // Records -- Point and Color, written from scratch.
 //
-// Required API:
+// Required types and behavior:
 //
-//   record Point(double X, double Y)   // positional record (reference type)
-//   {
-//       public double DistanceTo(Point other)
-//           // Math.Sqrt((X-other.X)^2 + (Y-other.Y)^2)
-//   }
+//   Point — a REFERENCE type with two double coordinates (X, Y).
+//       Uses value equality: two Points with identical coordinates are equal.
+//       Supports non-destructive mutation (create a copy with one field changed).
+//       Supports deconstruction: var (x, y) = somePoint;
+//       DistanceTo(Point other) → double — Euclidean distance.
 //
-//   record struct Color(byte R, byte G, byte B)  // value-type record
-//   {
-//       public string ToHex()   // "#RRGGBB" uppercase hex
-//   }
+//   Color — a VALUE type (not a reference type) with three byte components (R, G, B).
+//       Also uses value equality and supports non-destructive mutation.
+//       ToHex() → string — returns "#RRGGBB" in uppercase hex.
 //
-// Behavior notes:
-//   - new Point(1,2) == new Point(1,2) is true (value equality)
-//   - p with { Y = 99 } creates a modified copy
-//   - var (x, y) = new Point(3, 4); works via auto-generated Deconstruct
+// Note: C# has a concise syntax for declaring immutable data types with auto-generated
+//       equality, ToString, and deconstruction — both as reference types and value types.
+//       Look up what keyword(s) enable this.
 
 namespace Kata;
 

@@ -47,24 +47,12 @@ buffer[0] = 42;
 | Stack-allocated temp buffer | `stackalloc` + `Span<T>` |
 | Cross-version/interop (pre-.NET Core 2.1) | `ArraySegment<T>` |
 
-## Required implementation
+## Required implementation (all in static class SpanDemos)
 
-```csharp
-public static class SpanDemos
-{
-    public static int Sum(ReadOnlySpan<int> span);
-        // sum elements without allocating
+- `Sum(read-only span of int)` → int — sums elements without allocating.
+- `Slice(int[] arr, int start, int length)` → read-only span of int — a zero-copy view over the specified range (no new array).
+- `ParseFirstInt(read-only span of char)` → int — parse an int without a string allocation.
+- `StackAllocSum(int n)` → int — allocate n ints on the stack, fill with 1..n, return their sum (no heap allocation).
+- `MemorySum(heap-compatible span wrapper of int)` → int — sum via the synchronous span view.
 
-    public static ReadOnlySpan<int> Slice(int[] arr, int start, int length);
-        // return arr.AsSpan(start, length)
-
-    public static int ParseFirstInt(ReadOnlySpan<char> chars);
-        // int.Parse(chars) — no string allocation
-
-    public static int StackAllocSum(int n);
-        // stackalloc int[n], fill with 1..n, return sum
-
-    public static int MemorySum(Memory<int> mem);
-        // sum via mem.Span
-}
-```
+Note: look up `Span<T>`, `ReadOnlySpan<T>`, `Memory<T>`, and `stackalloc`.

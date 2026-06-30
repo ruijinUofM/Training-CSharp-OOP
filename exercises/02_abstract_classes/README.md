@@ -8,33 +8,22 @@
 
 An `abstract class Shape` with `abstract double Area()`, `abstract double Perimeter()`, and a `virtual string Describe()` that returns `"I am a {GetType().Name} with area {Area():F2}"`. `Circle` (radius) and `Rectangle` (width, height) are concrete subclasses.
 
-## Required API
+## Required classes and behavior
 
-```csharp
-abstract class Shape
-{
-    public abstract double Area();
-    public abstract double Perimeter();
-    public virtual string Describe() => $"I am a {GetType().Name} with area {Area():F2}";
-}
+- **Shape** — base class; cannot be instantiated directly.
+  - `Area()` → double — every concrete subclass must provide this.
+  - `Perimeter()` → double — every concrete subclass must provide this.
+  - `Describe()` → string — returns `"I am a {TypeName} with area {Area():F2}"`; subclasses may optionally override.
 
-class Circle : Shape
-{
-    public double Radius { get; }
-    public Circle(double radius)
-    public override double Area()      // Math.PI * Radius * Radius
-    public override double Perimeter() // 2 * Math.PI * Radius
-}
+- **Circle : Shape** — concrete; takes a radius.
+  - `Radius` (double) — read-only; set via constructor.
+  - `Area()` — `Math.PI * Radius * Radius`.
+  - `Perimeter()` — `2 * Math.PI * Radius`.
 
-class Rectangle : Shape
-{
-    public double Width { get; }
-    public double Height { get; }
-    public Rectangle(double width, double height)
-    public override double Area()      // Width * Height
-    public override double Perimeter() // 2 * (Width + Height)
-}
-```
+- **Rectangle : Shape** — concrete; takes width and height.
+  - `Width`, `Height` (double) — read-only; set via constructor.
+  - `Area()` — `Width * Height`.
+  - `Perimeter()` — `2 * (Width + Height)`.
 
 ## Things to watch for
 

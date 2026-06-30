@@ -8,29 +8,19 @@
 
 An `abstract class Logger` with `abstract void Log(string message)`. `ConsoleLogger : Logger` (not sealed — could be subclassed). `FileLogger : Logger` is `sealed` — nothing can inherit from it. The test verifies via reflection that `FileLogger` is sealed and `ConsoleLogger` is not.
 
-## Required API
+## Required classes and behavior
 
-```csharp
-abstract class Logger
-{
-    public abstract void Log(string message);
-    public string LastMessage { get; protected set; } = "";
-}
+- **Logger** — base class; cannot be instantiated directly.
+  - `LastMessage` (string) — stores the last logged message; settable from this class and subclasses only; defaults to `""`.
+  - `Log(string message)` — every concrete subclass must provide its own implementation.
 
-class ConsoleLogger : Logger
-{
-    public override void Log(string message)
-    // stores message in LastMessage, prints it
-}
+- **ConsoleLogger : Logger** — NOT restricted from being subclassed further.
+  - `Log(string message)` — sets LastMessage; prints to console.
 
-sealed class FileLogger : Logger
-{
-    public string FilePath { get; }
-    public FileLogger(string filePath)
-    public override void Log(string message)
-    // stores message in LastMessage (simulates file write)
-}
-```
+- **FileLogger : Logger** — CANNOT be subclassed; no further inheritance allowed.
+  - `FilePath` (string) — read-only; set via constructor.
+  - `FileLogger(string filePath)` — constructor.
+  - `Log(string message)` — sets LastMessage (simulates file write).
 
 ## Things to watch for
 

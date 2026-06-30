@@ -1,22 +1,21 @@
 // Properties -- BankAccount, written from scratch.
 //
-// Required API:
+// Required class and behavior:
 //
-//   class BankAccount
-//   {
-//       public string Owner { get; }              // read-only
-//       public decimal Balance { get; private set; }  // writable only inside class
+//   BankAccount:
+//       Owner (string) — read-only; set at construction, never changes.
+//       Balance (decimal) — readable from outside; only changeable from
+//           within the class (not via external assignment).
 //
-//       public BankAccount(string owner, decimal initialBalance)
-//           // throws ArgumentException if initialBalance < 0
+//       BankAccount(string owner, decimal initialBalance) — constructor;
+//           throws ArgumentException if initialBalance < 0.
 //
-//       public void Deposit(decimal amount)
-//           // throws ArgumentException if amount <= 0
+//       Deposit(decimal amount) — increases Balance;
+//           throws ArgumentException if amount <= 0.
 //
-//       public void Withdraw(decimal amount)
-//           // throws ArgumentException if amount <= 0
-//           // throws InvalidOperationException if amount > Balance
-//   }
+//       Withdraw(decimal amount) — decreases Balance;
+//           throws ArgumentException if amount <= 0;
+//           throws InvalidOperationException if amount > Balance.
 
 namespace Kata;
 

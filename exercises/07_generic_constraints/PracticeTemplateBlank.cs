@@ -1,23 +1,20 @@
 // Generic Constraints, written from scratch.
 //
-// Required API:
+// Required classes and behavior:
 //
-//   static class Algorithms
-//   {
-//       public static T Max<T>(T a, T b) where T : IComparable<T>
-//           // a.CompareTo(b) >= 0 ? a : b
+//   Algorithms — static class with generic helper methods.
+//       Max(a, b) → T — returns whichever is greater; the type parameter T must
+//           support comparison against itself (i.e., must be comparable to T).
+//       AreEqual(a, b) → bool — returns a.Equals(b); the type parameter T must
+//           be a value type (not a reference type).
 //
-//       public static bool AreEqual<T>(T a, T b) where T : struct
-//           // a.Equals(b)
-//   }
-//
-//   class Repository<T> where T : class, new()
-//   {
-//       public T Create()           // new T()
-//       public void Add(T item)
-//       public List<T> FindAll()    // returns items
-//       public int Count { get; }
-//   }
+//   Repository — a generic collection class.
+//       The type parameter must be a reference type AND must have a parameterless
+//       constructor.
+//       Create() → T — returns a new instance using the default constructor.
+//       Add(item) — adds an item to the internal list.
+//       FindAll() → List<T> — returns the stored items.
+//       Count (int) — number of items stored.
 
 namespace Kata;
 

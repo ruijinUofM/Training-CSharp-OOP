@@ -8,25 +8,18 @@ Indexers (`this[int row, int col]`), operator overloading (`+`, `*`, `==`, `!=`)
 
 A `Matrix` class backed by a 2D array. Supports element access via indexer, addition (`+`), scalar multiplication (`*`), and equality comparison (`==`, `!=`).
 
-## Required API
+## Required class and behavior
 
-```csharp
-class Matrix
-{
-    public int Rows { get; }
-    public int Cols { get; }
-    public Matrix(int rows, int cols)   // zero-initialized
+- **Matrix**:
+  - `Rows`, `Cols` (int) — read-only dimensions; set via constructor.
+  - `Matrix(int rows, int cols)` — constructs a zero-initialized matrix.
+  - Element access — supports `m[row, col]` for both reading and writing. (C# has a specific member syntax for this — it is not a normal property.)
+  - Supports `+` between two matrices (element-wise sum; throw if dimensions differ).
+  - Supports `*` between a matrix and a double scalar (scales all elements).
+  - Supports `==` and `!=` for element-wise equality. (Defining `==` requires also defining `!=` — compiler enforces this.)
+  - `Equals(object?)` and `GetHashCode()` — must be overridden to match the `==` behavior.
 
-    public double this[int row, int col] { get; set; }  // indexer
-
-    public static Matrix operator +(Matrix a, Matrix b)   // element-wise sum
-    public static Matrix operator *(Matrix m, double scalar)  // scale all elements
-    public static bool operator ==(Matrix a, Matrix b)   // element-wise equality
-    public static bool operator !=(Matrix a, Matrix b)
-    public override bool Equals(object? obj)
-    public override int GetHashCode()
-}
-```
+Note: `+`, `*`, `==`, `!=` each require a specific C# keyword to declare as a type-level operation rather than an instance method.
 
 ## Things to watch for
 

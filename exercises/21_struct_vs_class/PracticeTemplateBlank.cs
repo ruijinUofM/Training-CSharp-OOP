@@ -10,13 +10,18 @@ using Xunit;
 //   Box   b = a;   → b is an alias, mutating b DOES affect a.
 //
 // Implement:
-//   public struct Point { public int X, Y; ... }
-//   public class Box { public int Value { get; set; } ... }
-//   public static class Demos {
-//       public static bool StructsAreCopied();
-//       public static bool ClassesAreShared();
-//       public static bool IsValueType(Type t);
-//       public static bool IsReferenceType(Type t);
-//   }
+//   Point — a VALUE type (not a class) with two int fields: X and Y.
+//       Constructor sets X and Y.
+//
+//   Box — a REFERENCE type with one int property: Value (readable and writable).
+//       Constructor sets Value.
+//
+//   Demos — static class:
+//       StructsAreCopied(Point a, Point modifiedB) → bool
+//           — demonstrates structs are copied; return true.
+//       ClassesAreShared(Box original, Box alias) → bool
+//           — demonstrates both variables point to the same object; return true.
+//       IsValueType(Type t) → bool — true if t is a value type.
+//       IsReferenceType(Type t) → bool — true if t is not a value type.
 
 // Write your implementation below.

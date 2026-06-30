@@ -1,25 +1,23 @@
 // Interfaces -- IDrawable + IResizable, written from scratch.
 //
-// Required API:
+// Required classes and behavior:
 //
-//   interface IDrawable { void Draw(); }
-//   interface IResizable { void Resize(double factor); }
+//   IDrawable — contract with one method: Draw().
+//   IResizable — contract with one method: Resize(double factor).
 //
-//   class Circle : IDrawable, IResizable
-//   {
-//       public double Radius { get; private set; }
-//       public Circle(double radius)
-//       public void Draw()               // prints "Drawing circle r={Radius}"
-//       public void Resize(double factor) // Radius *= factor
-//   }
+//   Circle — fulfills both IDrawable and IResizable contracts.
+//       Radius (double) — readable from outside; only changeable from within
+//           the class or via Resize.
+//       Circle(double radius) — constructor.
+//       Draw() — prints "Drawing circle r={Radius}".
+//       Resize(double factor) — multiplies Radius by factor.
 //
-//   class Square : IDrawable, IResizable
-//   {
-//       public double Side { get; private set; }
-//       public Square(double side)
-//       public void Draw()               // prints "Drawing square s={Side}"
-//       public void Resize(double factor) // Side *= factor
-//   }
+//   Square — fulfills both IDrawable and IResizable contracts.
+//       Side (double) — readable from outside; only changeable from within
+//           the class or via Resize.
+//       Square(double side) — constructor.
+//       Draw() — prints "Drawing square s={Side}".
+//       Resize(double factor) — multiplies Side by factor.
 
 namespace Kata;
 

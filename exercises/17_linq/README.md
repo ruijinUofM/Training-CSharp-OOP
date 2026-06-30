@@ -8,35 +8,18 @@ LINQ method syntax: `Where`, `Select`, `OrderBy`/`OrderByDescending`, `GroupBy`,
 
 `Product` record with Name, Category, Price, Stock. `ProductQueries` static class with methods that each perform a LINQ query.
 
-## Required API
+## Required types and behavior
 
-```csharp
-record Product(string Name, string Category, decimal Price, int Stock);
+- **Product** — an immutable data type with four fields: Name (string), Category (string), Price (decimal), Stock (int). Uses value equality. (Look up the C# syntax for declaring this concisely with auto-generated equality and deconstruction.)
 
-static class ProductQueries
-{
-    public static IEnumerable<Product> InStock(IEnumerable<Product> products)
-    // Where(p => p.Stock > 0)
-
-    public static IEnumerable<Product> ByCategory(IEnumerable<Product> products, string category)
-    // Where(p => p.Category == category)
-
-    public static IEnumerable<Product> CheaperThan(IEnumerable<Product> products, decimal maxPrice)
-    // Where(p => p.Price < maxPrice)
-
-    public static IEnumerable<string> Names(IEnumerable<Product> products)
-    // Select(p => p.Name)
-
-    public static decimal TotalValue(IEnumerable<Product> products)
-    // Sum(p => p.Price * p.Stock)
-
-    public static Dictionary<string, List<Product>> GroupByCategory(IEnumerable<Product> products)
-    // GroupBy then ToDictionary
-
-    public static IEnumerable<Product> TopNByPrice(IEnumerable<Product> products, int n)
-    // OrderByDescending(p => p.Price).Take(n)
-}
-```
+- **ProductQueries** — static class with LINQ-based query methods:
+  - `InStock(products)` — products where Stock > 0.
+  - `ByCategory(products, cat)` — products where Category == cat.
+  - `CheaperThan(products, max)` — products where Price < max.
+  - `Names(products)` → sequence of strings — product names.
+  - `TotalValue(products)` → decimal — sum of Price * Stock across all products.
+  - `GroupByCategory(products)` → `Dictionary<string, List<Product>>` — maps each category to its products.
+  - `TopNByPrice(products, n)` — top N products by price (highest first).
 
 ## Things to watch for
 

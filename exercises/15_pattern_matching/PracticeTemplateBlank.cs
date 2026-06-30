@@ -1,23 +1,25 @@
 // Pattern Matching -- ShapeMath, written from scratch.
 //
-// Required API:
+// Required types and behavior:
 //
-//   abstract record Shape;
-//   record Circle(double Radius) : Shape;
-//   record Rectangle(double Width, double Height) : Shape;
-//   record Triangle(double A, double B, double C) : Shape;
+//   Shape — a base type that cannot be instantiated directly; uses value equality;
+//       supports deconstruction in pattern matching.
+//   Circle : Shape — has one component: Radius (double).
+//   Rectangle : Shape — has two components: Width, Height (double).
+//   Triangle : Shape — has three components: A, B, C (double) — side lengths.
 //
-//   static class ShapeMath
-//   {
-//       public static double Area(Shape shape)   // switch expression with positional patterns
-//           // Circle(r)     => Math.PI * r * r
-//           // Rectangle(w,h) => w * h
-//           // Triangle(a,b,c) => Heron's formula
-//           // _             => throw ArgumentException
+//   Note: use C#'s concise immutable data type syntax. The base Shape should not
+//         be directly instantiable.
 //
-//       public static string Classify(int n)     // relational patterns
-//           // < 0 => "negative", 0 => "zero", 1-9 => "small", >=10 => "large"
-//   }
+//   ShapeMath — static class:
+//       Area(Shape) → double — dispatches on shape type using a switch expression
+//           with positional patterns:
+//           Circle(r):      Math.PI * r * r
+//           Rectangle(w,h): w * h
+//           Triangle(a,b,c): Heron's formula — s=(a+b+c)/2; sqrt(s*(s-a)*(s-b)*(s-c))
+//           unknown:        throw ArgumentException
+//       Classify(int) → string — using relational patterns:
+//           < 0  → "negative", 0 → "zero", 1–9 → "small", >= 10 → "large"
 //
 // Heron's formula: s = (a+b+c)/2; Math.Sqrt(s*(s-a)*(s-b)*(s-c))
 

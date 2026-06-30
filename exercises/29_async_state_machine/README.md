@@ -41,26 +41,10 @@ Key points:
 
 Each `async` method allocates: the state machine (unless it completes synchronously), the `Task`/`ValueTask` object. Use `ValueTask` in hot paths where synchronous completion is common.
 
-## Required implementation
+## Required implementation (all in static class AsyncDemos)
 
-```csharp
-public static class AsyncDemos
-{
-    // Immediately completed task (no real suspension)
-    public static async Task<int> SyncCompletingAsync(int value);
-        // return value (using await Task.FromResult internally is fine)
-
-    // Simulated I/O: delays and returns
-    public static async Task<int> DelayedAsync(int ms, int value);
-
-    // Run two tasks concurrently and sum their results
-    public static async Task<int> ConcurrentSumAsync(Task<int> a, Task<int> b);
-
-    // Run tasks sequentially (one after the other)
-    public static async Task<int> SequentialSumAsync(Func<Task<int>> getA, Func<Task<int>> getB);
-
-    // Whether the awaitable was already complete (no suspension occurred)
-    public static async Task<bool> WasAlreadyComplete();
-        // await Task.CompletedTask; return true
-}
-```
+- `SyncCompletingAsync(int value)` → int (asynchronously) — returns value immediately using an already-completed result; no real suspension.
+- `DelayedAsync(int ms, int value)` → int (asynchronously) — waits ms milliseconds, then returns value.
+- `ConcurrentSumAsync(Task<int> a, Task<int> b)` → int (asynchronously) — runs a and b concurrently, then sums their results.
+- `SequentialSumAsync(Func<Task<int>> getA, Func<Task<int>> getB)` → int (asynchronously) — completes getA first, then getB, then sums.
+- `WasAlreadyComplete()` → bool (asynchronously) — awaits a pre-completed no-op; returns true.

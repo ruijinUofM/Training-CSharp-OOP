@@ -31,27 +31,11 @@ int m = (int)obj; // unbox: copies the value out of the box
 
 Use a profiler, or write a benchmark. At IL level, boxing emits the `box` opcode.
 
-## Required implementation
+## Required implementation (all in static class BoxingDemos)
 
-```csharp
-public static class BoxingDemos
-{
-    // Box an int — return it as object
-    public static object BoxInt(int value) => throw new NotImplementedException();
-
-    // Unbox an object to int — may throw InvalidCastException
-    public static int UnboxInt(object obj) => throw new NotImplementedException();
-
-    // Box multiple ints into an ArrayList (pre-generics)
-    public static System.Collections.ArrayList BoxMany(IEnumerable<int> values) => ...
-
-    // No boxing: use List<int>
-    public static List<int> NoBoxing(IEnumerable<int> values) => ...
-
-    // Returns the type of the object inside a box
-    public static Type GetBoxedType(object obj) => obj.GetType();
-
-    // Check if an object is a boxed int
-    public static bool IsBoxedInt(object obj) => obj is int;
-}
-```
+- `BoxInt(int value)` → object — returns the int as an object (triggers boxing).
+- `UnboxInt(object obj)` → int — extracts the int from the boxed object (may throw `InvalidCastException` if wrong type).
+- `BoxMany(IEnumerable<int> values)` → ArrayList — adds all ints to a non-generic collection (each insertion triggers boxing).
+- `NoBoxing(IEnumerable<int> values)` → `List<int>` — same but using the generic collection (no boxing).
+- `GetBoxedType(object obj)` → Type — the runtime type of the boxed value.
+- `IsBoxedInt(object obj)` → bool — true if the object holds a boxed int.

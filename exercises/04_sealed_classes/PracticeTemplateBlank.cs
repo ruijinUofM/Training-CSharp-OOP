@@ -1,24 +1,19 @@
 // Sealed Classes -- Logger hierarchy, written from scratch.
 //
-// Required API:
+// Required classes and behavior:
 //
-//   abstract class Logger
-//   {
-//       public abstract void Log(string message);
-//       public string LastMessage { get; protected set; } = "";
-//   }
+//   Logger — base class; cannot be instantiated directly.
+//       LastMessage (string) — stores the last logged message; settable from
+//           this class and its subclasses only; defaults to "".
+//       Log(string message) — every concrete subclass must provide its own.
 //
-//   class ConsoleLogger : Logger      // NOT sealed
-//   {
-//       public override void Log(string message)  // sets LastMessage, prints to console
-//   }
+//   ConsoleLogger : Logger — NOT restricted from being subclassed further.
+//       Log(string message) — sets LastMessage; prints to console.
 //
-//   sealed class FileLogger : Logger   // SEALED
-//   {
-//       public string FilePath { get; }
-//       public FileLogger(string filePath)
-//       public override void Log(string message)  // sets LastMessage (simulates file write)
-//   }
+//   FileLogger : Logger — CANNOT be subclassed; no further inheritance allowed.
+//       FilePath (string) — read-only; set via constructor.
+//       FileLogger(string filePath) — constructor.
+//       Log(string message) — sets LastMessage (simulates file write).
 //
 // Behavior notes:
 //   - typeof(FileLogger).IsSealed == true

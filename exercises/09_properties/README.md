@@ -8,25 +8,14 @@ Auto-properties, computed properties, backing fields with validation in setters,
 
 A `BankAccount` with an `Owner` (read-only), a `Balance` (validated — no negative balance), `Deposit`, and `Withdraw`. The setter is private; external code can only change balance through the public methods.
 
-## Required API
+## Required class and behavior
 
-```csharp
-class BankAccount
-{
-    public string Owner { get; }
-    public decimal Balance { get; private set; }
-
-    public BankAccount(string owner, decimal initialBalance)
-    // throws ArgumentException if initialBalance < 0
-
-    public void Deposit(decimal amount)
-    // throws ArgumentException if amount <= 0
-
-    public void Withdraw(decimal amount)
-    // throws ArgumentException if amount <= 0
-    // throws InvalidOperationException if amount > Balance
-}
-```
+- **BankAccount**:
+  - `Owner` (string) — read-only; set at construction, never changes.
+  - `Balance` (decimal) — readable from outside; only changeable from within the class (not via external assignment).
+  - `BankAccount(string owner, decimal initialBalance)` — throws `ArgumentException` if initialBalance < 0.
+  - `Deposit(decimal amount)` — increases Balance; throws `ArgumentException` if amount ≤ 0.
+  - `Withdraw(decimal amount)` — decreases Balance; throws `ArgumentException` if amount ≤ 0; throws `InvalidOperationException` if amount > Balance.
 
 ## Things to watch for
 

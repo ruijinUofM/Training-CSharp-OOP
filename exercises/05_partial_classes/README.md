@@ -12,27 +12,16 @@
 
 Both files declare `public partial class CustomerOrder`. The compiler merges them.
 
-## Required API
+## Required implementation
 
-You only write `Practice.cs`. `GeneratedPart.cs` is already provided:
+`GeneratedPart.cs` is already provided (don't modify it). It defines one half of `CustomerOrder` with `OrderId`, `CustomerName`, and `CreatedAt`.
 
-```csharp
-// GeneratedPart.cs (already done — don't modify)
-public partial class CustomerOrder
-{
-    public int OrderId { get; set; }
-    public string CustomerName { get; set; } = "";
-    public DateTimeOffset CreatedAt { get; init; } = DateTimeOffset.UtcNow;
-}
+You write `Practice.cs` — the second half of the same class:
 
-// Practice.cs (you implement)
-public partial class CustomerOrder
-{
-    public List<string> Items { get; } = new();
-    public decimal Total => Items.Count * 9.99m;
-    public string Summary()   // "Order #{OrderId} for {CustomerName}: {Items.Count} item(s)"
-}
-```
+- Declares the second half of `CustomerOrder` (must share the same class name, namespace, and use the keyword that enables split-file classes).
+- `Items` (List&lt;string&gt;) — read-only reference; starts empty.
+- `Total` (decimal, computed) — `Items.Count * 9.99m`.
+- `Summary()` → string — `"Order #{OrderId} for {CustomerName}: {Items.Count} item(s)"`; you can reference `OrderId` and `CustomerName` from the other half.
 
 ## Things to watch for
 

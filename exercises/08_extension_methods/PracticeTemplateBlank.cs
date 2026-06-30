@@ -1,25 +1,19 @@
 // Extension Methods -- StringExtensions + IntExtensions, written from scratch.
 //
-// Required API:
+// Required methods and behavior:
 //
-//   static class StringExtensions
-//   {
-//       public static bool IsPalindrome(this string s)
-//           // ignores case and spaces; "Race Car" -> true
+//   StringExtensions — methods callable directly on string values (e.g., s.IsPalindrome()).
+//       IsPalindrome(string) → bool — ignores case and spaces; "Race Car" → true.
+//       Truncate(string, int maxLength) → string — returns the string unchanged if
+//           short enough; otherwise first maxLength chars + "...".
+//       WordCount(string) → int — count of whitespace-separated words; "" → 0.
 //
-//       public static string Truncate(this string s, int maxLength)
-//           // "Hello World".Truncate(5) -> "Hello..."
-//           // "Hi".Truncate(5) -> "Hi"
+//   IntExtensions — methods callable directly on int values (e.g., n.IsEven()).
+//       IsEven(int) → bool — n % 2 == 0.
+//       Times(int) → sequence of ints — yields 0, 1, …, n-1.
 //
-//       public static int WordCount(this string s)
-//           // "hello world" -> 2, "" -> 0
-//   }
-//
-//   static class IntExtensions
-//   {
-//       public static bool IsEven(this int n)     // n % 2 == 0
-//       public static IEnumerable<int> Times(this int n)  // yields 0..n-1
-//   }
+// Note: extension methods must live in a static class and use a special first-parameter
+//       syntax so they can be called as if they belonged to the extended type.
 
 namespace Kata;
 

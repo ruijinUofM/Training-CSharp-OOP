@@ -8,18 +8,15 @@ using Xunit;
 // Fix: create a new local each iteration so each lambda gets its own closure.
 // foreach in C# 6+ does NOT have this bug (loop var is fresh each iteration).
 //
-// Implement:
-//   public static class LambdaDemos {
-//       public static Func<int,int> MakeMultiplier(int factor);
-//           // return x => x * factor;
-//       public static List<Func<int>> LateBuggy();
-//           // for(int i=0;i<3;i++) fns.Add(()=>i); — all return 3
-//       public static List<Func<int>> LateFixed();
-//           // for(int i=0;i<3;i++){ int c=i; fns.Add(()=>c); } — return 0,1,2
-//       public static Func<int> MakeCounter(int start=0);
-//           // int count=start; return ()=>++count;
-//       public static Func<int,int> Compose(Func<int,int> f, Func<int,int> g);
-//           // return x=>f(g(x));
-//   }
+// Implement (all in static class LambdaDemos):
+//   MakeMultiplier(int factor) → (int → int) — returns a function that multiplies
+//       its argument by factor; closes over factor.
+//   LateBuggy() → list of (() → int) — 3 lambdas capturing the same for-loop counter;
+//       all return 3 after the loop ends (demonstrates the late-binding bug).
+//   LateFixed() → list of (() → int) — 3 lambdas each capturing their own copy of the
+//       loop variable; return 0, 1, 2 respectively (demonstrates the fix).
+//   MakeCounter(int start = 0) → (() → int) — each invocation increments and returns a
+//       shared counter starting at start (closes over a mutable local).
+//   Compose(f, g) → (int → int) — returns a new function that applies g then f: x → f(g(x)).
 
 // Write your implementation below.

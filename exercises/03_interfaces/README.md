@@ -8,35 +8,22 @@
 
 `IDrawable` (has `Draw()`) and `IResizable` (has `Resize(double factor)`). `Circle` implements both — it has a `Radius` property, `Draw()` prints to console, and `Resize` multiplies Radius by the factor. `Square` also implements both.
 
-## Required API
+## Required classes and behavior
 
-```csharp
-interface IDrawable
-{
-    void Draw();
-}
+- **IDrawable** — contract with one method: `Draw()`.
+- **IResizable** — contract with one method: `Resize(double factor)`.
 
-interface IResizable
-{
-    void Resize(double factor);
-}
+- **Circle** — fulfills both IDrawable and IResizable.
+  - `Radius` (double) — readable from outside; only changeable from within the class or via Resize.
+  - `Circle(double radius)` — constructor.
+  - `Draw()` — prints `"Drawing circle r={Radius}"`.
+  - `Resize(double factor)` — multiplies Radius by factor.
 
-class Circle : IDrawable, IResizable
-{
-    public double Radius { get; private set; }
-    public Circle(double radius)
-    public void Draw()              // Console.WriteLine($"Drawing circle r={Radius}");
-    public void Resize(double factor)  // Radius *= factor;
-}
-
-class Square : IDrawable, IResizable
-{
-    public double Side { get; private set; }
-    public Square(double side)
-    public void Draw()              // Console.WriteLine($"Drawing square s={Side}");
-    public void Resize(double factor)  // Side *= factor;
-}
-```
+- **Square** — fulfills both IDrawable and IResizable.
+  - `Side` (double) — readable from outside; only changeable from within the class or via Resize.
+  - `Square(double side)` — constructor.
+  - `Draw()` — prints `"Drawing square s={Side}"`.
+  - `Resize(double factor)` — multiplies Side by factor.
 
 ## Things to watch for
 

@@ -8,26 +8,20 @@ Generic classes (`class Foo<T>`), multiple type parameters (`Foo<T, U>`), type s
 
 A typed `Stack<T>` (LIFO) and a `Pair<T, U>` with a `Swap()` method.
 
-## Required API
+## Required classes and behavior
 
-```csharp
-class Stack<T>
-{
-    public void Push(T item)
-    public T Pop()      // throws InvalidOperationException if empty
-    public T Peek()     // throws InvalidOperationException if empty
-    public int Count { get; }
-    public bool IsEmpty { get; }
-}
+- **Stack** — a generic LIFO collection typed over one type parameter.
+  - `Push(item)` — adds an item to the top.
+  - `Pop()` → item — removes and returns the top item; throws `InvalidOperationException` if empty.
+  - `Peek()` → item — returns the top item without removing it; throws `InvalidOperationException` if empty.
+  - `Count` (int) — number of items currently in the stack.
+  - `IsEmpty` (bool) — true when Count == 0.
 
-class Pair<T, U>
-{
-    public T First { get; }
-    public U Second { get; }
-    public Pair(T first, U second)
-    public Pair<U, T> Swap()   // returns new Pair with First/Second swapped
-}
-```
+- **Pair** — holds two values of potentially different types (two type parameters).
+  - `First` — the first value; read-only.
+  - `Second` — the second value; read-only.
+  - Constructor — takes first and second values.
+  - `Swap()` → Pair — returns a new Pair with First and Second swapped (with the type parameters also swapped).
 
 ## Things to watch for
 

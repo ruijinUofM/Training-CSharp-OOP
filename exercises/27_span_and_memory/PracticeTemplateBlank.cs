@@ -7,18 +7,17 @@ using Xunit;
 // stackalloc int[n] gives a stack buffer; wrap with Span<int>.
 // Memory<T> is the heap-compatible cousin — can be stored in fields and used in async.
 //
-// Implement:
-//   public static class SpanDemos {
-//       public static int Sum(ReadOnlySpan<int> span);
-//           // int total = 0; foreach (int x in span) total += x; return total;
-//       public static ReadOnlySpan<int> Slice(int[] arr, int start, int length);
-//           // return arr.AsSpan(start, length);
-//       public static int ParseFirstInt(ReadOnlySpan<char> chars);
-//           // return int.Parse(chars);
-//       public static int StackAllocSum(int n);
-//           // Span<int> buf = stackalloc int[n]; fill 1..n; return Sum(buf);
-//       public static int MemorySum(Memory<int> mem);
-//           // return Sum(mem.Span);
-//   }
+// Implement (all in static class SpanDemos):
+//   Sum(read-only span of int) → int — sums elements without allocating.
+//   Slice(int[] arr, int start, int length) → read-only span of int — returns a
+//       zero-copy view over the specified range (no new array created).
+//   ParseFirstInt(read-only span of char) → int — parses an int without creating
+//       a string allocation.
+//   StackAllocSum(int n) → int — allocates n ints on the stack, fills with 1..n,
+//       returns their sum (no heap allocation).
+//   MemorySum(heap-compatible span wrapper of int) → int — sums using the
+//       synchronous span view of the memory.
+//
+// Note: look up Span<T>, ReadOnlySpan<T>, Memory<T>, and stackalloc.
 
 // Write your implementation below.

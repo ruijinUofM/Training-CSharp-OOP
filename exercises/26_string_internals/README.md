@@ -46,16 +46,11 @@ for (int i = 0; i < 1000; i++) sb.Append(i);
 string s = sb.ToString(); // 1 allocation
 ```
 
-## Required implementation
+## Required implementation (all in static class StringInternals)
 
-```csharp
-public static class StringInternals
-{
-    public static bool ContentEqual(string a, string b);      // a == b (value equality)
-    public static bool ReferenceEqual(string a, string b);    // ReferenceEquals(a, b)
-    public static string InternString(string s);              // string.Intern(s)
-    public static bool IsInterned(string s);                  // string.IsInterned(s) != null
-    public static string ConcatWithPlus(int n);               // "" + 0 + 1 + ... (n-1)
-    public static string ConcatWithBuilder(int n);            // StringBuilder version
-}
-```
+- `ContentEqual(string a, string b)` → bool — true if both strings have the same content.
+- `ReferenceEqual(string a, string b)` → bool — true if both variables point to the same object.
+- `InternString(string s)` → string — ensures s is in the intern pool and returns it.
+- `IsInterned(string s)` → bool — true if s is already in the intern pool.
+- `ConcatWithPlus(int n)` → string — concatenate `"0"` through `"{n-1}"` using `+` in a loop.
+- `ConcatWithBuilder(int n)` → string — same but using the efficient mutable builder type.

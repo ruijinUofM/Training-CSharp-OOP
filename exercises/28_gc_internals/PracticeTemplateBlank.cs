@@ -7,17 +7,14 @@ using Xunit;
 // WeakReference<T> holds a reference that doesn't prevent GC collection.
 //   TryGetTarget(out T?) → true if object still alive.
 //
-// Implement:
-//   public static class GcDemos {
-//       public static int GetGeneration(object obj);         // GC.GetGeneration(obj)
-//       public static void CollectAll();
-//           // GC.Collect(); GC.WaitForPendingFinalizers(); GC.Collect();
-//       public static long TotalMemory(bool collect);        // GC.GetTotalMemory(collect)
-//       public static bool IsAlive<T>(WeakReference<T> wr) where T : class;
-//           // wr.TryGetTarget(out _)
-//       public static WeakReference<T> MakeWeak<T>(T obj) where T : class;
-//           // new WeakReference<T>(obj)
-//       public static int LohThresholdBytes => 85_000;
-//   }
+// Implement (all in static class GcDemos):
+//   GetGeneration(object obj) → int — which GC generation the object currently lives in.
+//   CollectAll() — trigger a full collection and wait for finalizers to complete.
+//   TotalMemory(bool collect) → long — total bytes allocated on the managed heap.
+//   IsAlive<T>(weak reference to T) → bool — T must be a reference type; returns true
+//       if the referenced object has not been collected yet.
+//   MakeWeak<T>(T obj) → weak reference to T — T must be a reference type; wraps obj
+//       in a reference that does not prevent collection.
+//   LohThresholdBytes — the byte size above which objects go to the LOH (85,000).
 
 // Write your implementation below.

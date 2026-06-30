@@ -50,17 +50,9 @@ void Print(in LargeStruct s) { Console.WriteLine(s.X); } // s cannot be mutated
 | `out`    | doesn't have to | must | not required | multi-return, TryParse pattern |
 | `in`     | must | no | yes | large struct — avoid copy |
 
-## Required implementation
+## Required implementation (all in static class ParameterDemos)
 
-```csharp
-public static class ParameterDemos
-{
-    public static void Swap(ref int a, ref int b);
-    public static bool TryDouble(string s, out int result);
-        // parse s as int; if success result = parsed*2; else result = 0
-    public static int SumWithRef(ref int accumulator, int value);
-        // accumulator += value; return accumulator
-    public static int ReadOnly(in int value);
-        // return value * 2 (cannot mutate value)
-}
-```
+- `Swap(int a, int b)` — exchanges the caller's two int variables in place. (Both parameters must let the method write back to the caller's variables.)
+- `TryDouble(string s, int result)` → bool — parses s as int; if successful, result = parsed * 2 and returns true; else result = 0 and returns false. (result is set by the method; caller does not need to initialize it.)
+- `SumWithRef(int accumulator, int value)` → int — adds value to the caller's accumulator variable directly and returns the new total. (accumulator is both read and written through the caller's variable.)
+- `ReadOnly(int value)` → int — returns value * 2; value is passed by reference but the method cannot modify it.

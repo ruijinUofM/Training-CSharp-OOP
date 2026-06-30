@@ -38,30 +38,10 @@ Console.WriteLine(p.Value); // 99!
 
 ## Required implementation
 
-```csharp
-public struct Point
-{
-    public int X;
-    public int Y;
-    public Point(int x, int y) { X = x; Y = y; }
-}
-
-public class Box
-{
-    public int Value { get; set; }
-    public Box(int value) { Value = value; }
-}
-
-public static class Demos
-{
-    public static bool StructsAreCopied(Point a, Point modifiedB) => ...
-        // pass in a Point 'a', assign to b, mutate b, return (a.X == b.X) ? false : true
-        // just return true (structs are always copied)
-
-    public static bool ClassesAreShared(Box original, Box alias) => ...
-        // pass two refs to same object, mutate via alias, check original — return true
-
-    public static bool IsValueType(Type t) => t.IsValueType;
-    public static bool IsReferenceType(Type t) => !t.IsValueType;
-}
-```
+- **Point** — a VALUE type (not a class) with two int fields: X and Y. Constructor sets X and Y.
+- **Box** — a REFERENCE type with one int property: Value (readable and writable). Constructor sets Value.
+- **Demos** — static class:
+  - `StructsAreCopied(Point a, Point modifiedB)` → bool — demonstrates structs are copied; return true.
+  - `ClassesAreShared(Box original, Box alias)` → bool — demonstrates both variables point to the same object; return true.
+  - `IsValueType(Type t)` → bool — true if t is a value type.
+  - `IsReferenceType(Type t)` → bool — true if t is not a value type.

@@ -8,35 +8,21 @@ Custom attributes, `[AttributeUsage]`, `Type.GetProperties()`, `PropertyInfo.Get
 
 A `[Validate(minLength, maxLength)]` attribute applied to string properties. A `FormValidator.Validate<T>(obj)` method uses reflection to inspect all properties with `[Validate]` and collect error messages.
 
-## Required API
+## Required types and behavior
 
-```csharp
-[AttributeUsage(AttributeTargets.Property)]
-class ValidateAttribute : Attribute
-{
-    public int MinLength { get; }
-    public int MaxLength { get; }
-    public ValidateAttribute(int minLength, int maxLength)
-}
+- **ValidateAttribute** — a custom metadata tag applicable to properties only.
+  - `MinLength` (int), `MaxLength` (int) — read-only; set via constructor.
+  - (Look up how to declare a custom attribute class in C#, and how to restrict which targets it can be applied to.)
 
-static class FormValidator
-{
-    public static List<string> Validate<T>(T obj)
-    // For each property with [Validate]:
-    //   get the string value
-    //   if null or length < MinLength: add "{PropertyName} is too short"
-    //   if length > MaxLength: add "{PropertyName} is too long"
-}
+- **FormValidator** — static class:
+  - `Validate<T>(T obj)` → `List<string>` — inspects all properties of `obj` at runtime; for each property tagged with `ValidateAttribute`:
+    - gets the string value of the property;
+    - if null or shorter than MinLength: adds `"{PropertyName} is too short"`;
+    - if longer than MaxLength: adds `"{PropertyName} is too long"`.
 
-class UserForm
-{
-    [Validate(2, 50)]
-    public string? Name { get; set; }
-
-    [Validate(5, 100)]
-    public string? Email { get; set; }
-}
-```
+- **UserForm** — example form class with two nullable string properties:
+  - `Name` — must be 2–50 characters.
+  - `Email` — must be 5–100 characters.
 
 ## Things to watch for
 

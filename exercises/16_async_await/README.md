@@ -8,25 +8,21 @@
 
 Async helper methods that simulate I/O with `Task.Delay`: `FetchDataAsync`, `SumAsync`, `FetchAllAsync` (parallel), and `FetchWithCancellationAsync`.
 
-## Required API
+## Required methods and behavior (all in static class AsyncHelpers)
 
-```csharp
-static class AsyncHelpers
-{
-    public static async Task<string> FetchDataAsync(string id, int delayMs = 10)
-    // await Task.Delay(delayMs); return $"Data for {id}";
+- `FetchDataAsync(string id, int delayMs = 10)` → string (runs asynchronously):
+  Waits delayMs milliseconds without blocking the thread, then returns `"Data for {id}"`.
 
-    public static async Task<int> SumAsync(IEnumerable<int> numbers)
-    // await Task.Delay(1); return numbers.Sum();
+- `SumAsync(IEnumerable<int> numbers)` → int (runs asynchronously):
+  Waits 1ms without blocking, then returns the sum.
 
-    public static async Task<string[]> FetchAllAsync(string[] ids)
-    // launch all FetchDataAsync calls in parallel, await Task.WhenAll
+- `FetchAllAsync(string[] ids)` → string[] (runs asynchronously):
+  Launches FetchDataAsync for all IDs at the same time; waits for all to complete; returns all results.
 
-    public static async Task<string> FetchWithCancellationAsync(string id, CancellationToken ct)
-    // await Task.Delay(100, ct);  (throws OperationCanceledException if cancelled)
-    // return $"Data for {id}";
-}
-```
+- `FetchWithCancellationAsync(string id, CancellationToken ct)` → string (runs asynchronously):
+  Waits 100ms respecting the cancellation token; if cancelled, the cancellation exception propagates naturally; otherwise returns `"Data for {id}"`.
+
+Note: methods that perform work asynchronously use specific C# keywords for the method signature and for suspending execution. Look them up if unsure.
 
 ## Things to watch for
 

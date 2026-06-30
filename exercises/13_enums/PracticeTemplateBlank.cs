@@ -1,22 +1,22 @@
 // Enums -- OrderStatus + Permission, written from scratch.
 //
-// Required API:
+// Required types and behavior:
 //
-//   enum OrderStatus { Pending, Processing, Shipped, Delivered, Cancelled }
+//   OrderStatus — a named, discrete set of states: Pending, Processing, Shipped,
+//       Delivered, Cancelled.
+//       (C# has a specific keyword for declaring a type that represents a set of named constants.)
 //
-//   static class OrderStatusExtensions
-//   {
-//       public static bool IsTerminal(this OrderStatus s)
-//           // true for Delivered and Cancelled
+//   OrderStatusExtensions — methods callable directly on OrderStatus values.
+//       IsTerminal(OrderStatus) → bool — called as s.IsTerminal(); true for
+//           Delivered and Cancelled.
+//       CanTransitionTo(OrderStatus current, OrderStatus next) → bool — called as
+//           current.CanTransitionTo(next); valid transitions:
+//           Pending → Processing, Processing → Shipped, Shipped → Delivered,
+//           anything (non-terminal) → Cancelled; terminal states: no valid transitions.
 //
-//       public static bool CanTransitionTo(this OrderStatus current, OrderStatus next)
-//           // Pending->Processing, Processing->Shipped, Shipped->Delivered
-//           // anything (not already terminal) -> Cancelled
-//           // terminal states cannot transition anywhere
-//   }
-//
-//   [Flags]
-//   enum Permission { None = 0, Read = 1, Write = 2, Execute = 4 }
+//   Permission — a set of bit-flag values that can be combined with bitwise OR.
+//       Values: None=0, Read=1, Write=2, Execute=4.
+//       Requires a specific attribute on the type to enable bitwise combination semantics.
 
 namespace Kata;
 

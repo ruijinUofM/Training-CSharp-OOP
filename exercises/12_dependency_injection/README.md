@@ -8,37 +8,23 @@ Constructor injection, interface-based dependencies, test doubles (fakes).
 
 `NotificationService` receives an `IEmailSender` via its constructor. `FakeEmailSender` captures messages for testing. `ConsoleEmailSender` writes to stdout for real use.
 
-## Required API
+## Required classes and behavior
 
-```csharp
-interface IEmailSender
-{
-    void Send(string to, string subject, string body);
-}
+- **IEmailSender** — contract: `Send(string to, string subject, string body)`.
 
-class FakeEmailSender : IEmailSender
-{
-    public List<(string To, string Subject, string Body)> Sent { get; } = new();
-    public void Send(string to, string subject, string body)
-    // appends (to, subject, body) to Sent
-}
+- **FakeEmailSender** — fulfills IEmailSender for testing.
+  - `Sent` — a list of `(To, Subject, Body)` tuples capturing every call to Send.
+  - `Send(...)` — appends to Sent (no real email sent).
 
-class ConsoleEmailSender : IEmailSender
-{
-    public void Send(string to, string subject, string body)
-    // Console.WriteLine($"To: {to} | {subject}")
-}
+- **ConsoleEmailSender** — fulfills IEmailSender for real use.
+  - `Send(...)` — writes to stdout (e.g., `"To: {to} | {subject}"`).
 
-class NotificationService
-{
-    private readonly IEmailSender _sender;
-    public NotificationService(IEmailSender sender)
-
-    public void NotifyUser(string email, string eventName)
-    // Subject = $"Notification: {eventName}"
-    // Body    = $"You have a new event: {eventName}"
-}
-```
+- **NotificationService** — uses IEmailSender without knowing which implementation.
+  - Constructor receives an IEmailSender (injected by the caller, not created here).
+  - The sender field cannot be reassigned after construction.
+  - `NotifyUser(string email, string eventName)` — delegates to Send with:
+    - Subject = `"Notification: {eventName}"`
+    - Body = `"You have a new event: {eventName}"`
 
 ## Things to watch for
 

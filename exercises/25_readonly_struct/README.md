@@ -44,17 +44,12 @@ Without `readonly`, the compiler inserts a defensive copy on each `in` parameter
 
 ## Required implementation
 
-```csharp
-public readonly struct Vector2
-{
-    public double X { get; init; }
-    public double Y { get; init; }
-    public Vector2(double x, double y);
-    public double Length { get; }           // Math.Sqrt(X*X + Y*Y)
-    public Vector2 Add(Vector2 other);      // returns new Vector2
-    public Vector2 Scale(double factor);    // returns new Vector2
-    public bool Equals(Vector2 other);      // X == other.X && Y == other.Y
+Implement **Vector2** as a fully immutable value type. (Look up the C# keyword that enforces full immutability on a struct, preventing any field mutation.)
 
-    public static Vector2 Zero => new Vector2(0, 0);
-}
-```
+- `X`, `Y` (double) — set at construction; cannot be changed afterward.
+- `Vector2(double x, double y)` — constructor.
+- `Length` (double, computed) — `Math.Sqrt(X*X + Y*Y)`.
+- `Add(Vector2 other)` → Vector2 — returns a new `Vector2(X+other.X, Y+other.Y)`; does NOT mutate this instance.
+- `Scale(double factor)` → Vector2 — returns a new `Vector2(X*factor, Y*factor)`; does NOT mutate.
+- `Equals(Vector2 other)` → bool — `X == other.X && Y == other.Y`.
+- `Zero` (static) → Vector2 — returns `(0, 0)`.

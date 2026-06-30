@@ -1,27 +1,29 @@
 // Covariance and Contravariance, written from scratch.
 //
-// Required API:
+// Required classes and behavior:
 //
-//   class Animal { public string Name { get; } Animal(string name) }
-//   class Dog : Animal { Dog(string name) : base(name) }
+//   Animal — Name (string) read-only; set via constructor.
+//   Dog : Animal — passes name up to Animal's constructor.
 //
-//   interface IProducer<out T> { T Produce(); }    // covariant: out T
-//   interface IConsumer<in T>  { void Consume(T item); }  // contravariant: in T
+//   IProducer<T> — contract with one method: Produce() → T.
+//       The type parameter only appears in output (return) positions, meaning an
+//       IProducer<Dog> can be assigned to IProducer<Animal>.
+//       (C# requires a specific keyword on the type parameter to enable this.)
 //
-//   class DogProducer : IProducer<Dog>
-//   {
-//       public Dog Produce() => new Dog("Rex");
-//   }
+//   IConsumer<T> — contract with one method: Consume(T item).
+//       The type parameter only appears in input (parameter) positions, meaning an
+//       IConsumer<Animal> can be assigned to IConsumer<Dog>.
+//       (C# requires a specific keyword on the type parameter to enable this.)
 //
-//   class AnimalConsumer : IConsumer<Animal>
-//   {
-//       public List<string> Consumed { get; } = new();
-//       public void Consume(Animal a) => Consumed.Add(a.Name);
-//   }
+//   DogProducer — fulfills IProducer<Dog>; Produce() returns new Dog("Rex").
+//
+//   AnimalConsumer — fulfills IConsumer<Animal>.
+//       Consumed (List<string>) — tracks names of consumed animals.
+//       Consume(Animal) — appends the animal's Name to Consumed.
 //
 // Key assignments to understand:
-//   IProducer<Animal> = new DogProducer();  // covariance: Dog IS an Animal
-//   IConsumer<Dog> = new AnimalConsumer();  // contravariance: Animal consumer can consume Dog
+//   IProducer<Dog> can be assigned to IProducer<Animal> (covariance — Dog IS an Animal)
+//   IConsumer<Animal> can be assigned to IConsumer<Dog> (contravariance)
 
 namespace Kata;
 

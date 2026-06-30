@@ -47,24 +47,10 @@ fns[0]() // → 0
 
 Note: `foreach` in modern C# (6+) does **not** have this bug — the loop variable is re-declared each iteration.
 
-## Required implementation
+## Required implementation (all in static class LambdaDemos)
 
-```csharp
-public static class LambdaDemos
-{
-    public static Func<int, int> MakeMultiplier(int factor);
-        // return x => x * factor;
-
-    public static List<Func<int>> LateBuggy();
-        // for loop capturing i → all return 3
-
-    public static List<Func<int>> LateFixed();
-        // for loop with captured copy → return 0, 1, 2
-
-    public static Func<int> MakeCounter(int start = 0);
-        // captures a mutable local; each call increments and returns it
-
-    public static Func<int, int> Compose(Func<int, int> f, Func<int, int> g);
-        // return x => f(g(x));
-}
-```
+- `MakeMultiplier(int factor)` → (int → int) — returns a function that multiplies its argument by factor; closes over factor.
+- `LateBuggy()` → list of (() → int) — 3 lambdas capturing the same for-loop counter; all return 3 after the loop (demonstrates the late-binding bug).
+- `LateFixed()` → list of (() → int) — 3 lambdas each capturing their own copy; return 0, 1, 2 respectively (demonstrates the fix).
+- `MakeCounter(int start = 0)` → (() → int) — each invocation increments and returns a shared counter starting at start.
+- `Compose(f, g)` → (int → int) — returns a new function that applies g then f: `x → f(g(x))`.
