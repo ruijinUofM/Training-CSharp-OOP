@@ -2,11 +2,11 @@
 
 ## Feature
 
-`delegate` type, `event`, `EventHandler`, `Action<T>`, `Func<T>`, multicast delegates, null-conditional invocation.
+Delegates and events — observable notifications, multicast subscribers, and null-conditional invocation.
 
 ## Case study
 
-A `Button` with an `event EventHandler? Clicked` and a `Click()` method that fires it. A `Counter` with `event Action<int>? CountChanged` that fires with the new count on each `Increment()`.
+A `Button` that fires a notification when `Click()` is called — subscribers receive the Button and an EventArgs. A `Counter` that fires a notification after each `Increment()` — subscribers receive the new count as an int.
 
 ## Required classes and behavior
 
@@ -23,8 +23,8 @@ Note: C# has a specific keyword for declaring observable notifications on a clas
 
 ## Things to watch for
 
-- `event EventHandler? Clicked` — `EventHandler` is `delegate void (object sender, EventArgs e)`. The `?` means the event may have no subscribers.
-- Fire events with null-conditional: `Clicked?.Invoke(this, EventArgs.Empty);` — safe when no subscribers are attached.
-- `+=` adds a subscriber, `-=` removes it. Multiple subscribers form a multicast delegate.
-- `Action<int>` is a built-in delegate type equivalent to `delegate void (int value)`. No need to declare a custom delegate.
-- Events differ from plain delegates: only the declaring class can invoke them; subscribers can only add/remove themselves.
+- The standard .NET delegate shape for event handlers takes a sender (the object firing) and event data — look up `EventHandler` and `EventArgs`.
+- Fire notifications safely using null-conditional invocation — this handles the case where no subscribers are attached.
+- `+=` adds a subscriber, `-=` removes it. Multiple subscribers form a multicast delegate chain.
+- For `CountChanged`, use a built-in generic delegate type that takes one parameter — no need to declare a custom delegate type.
+- Events differ from plain public delegates: only the declaring class can invoke them; outside code can only add/remove subscribers.

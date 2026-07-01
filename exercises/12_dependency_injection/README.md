@@ -31,5 +31,5 @@ Constructor injection, interface-based dependencies, test doubles (fakes).
 - `NotificationService` does NOT create an `IEmailSender` internally. The caller decides which implementation to use — this is dependency injection.
 - In a real app (ASP.NET Core), you'd register `IEmailSender → SmtpEmailSender` in the DI container and let the framework inject it automatically.
 - The test uses `FakeEmailSender` — same interface, different behavior. No real emails, no network.
-- `readonly` on the field prevents accidental reassignment after construction.
+- Think about how to prevent the injected sender field from being reassigned after construction — C# has a field modifier for this.
 - Tuple syntax `(string To, string Subject, string Body)` is a named tuple — `item.To`, `item.Subject`, `item.Body` work without a separate class.

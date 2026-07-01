@@ -2,11 +2,11 @@
 
 ## Feature
 
-`abstract class`, `abstract` methods (no body), `virtual` methods (optional override), cannot instantiate abstract classes.
+Abstract base classes — classes that cannot be instantiated directly, methods with no implementation that concrete subclasses must provide, and optional methods with a default implementation.
 
 ## Case study
 
-An `abstract class Shape` with `abstract double Area()`, `abstract double Perimeter()`, and a `virtual string Describe()` that returns `"I am a {GetType().Name} with area {Area():F2}"`. `Circle` (radius) and `Rectangle` (width, height) are concrete subclasses.
+A `Shape` base class that cannot be instantiated directly. It declares `Area()` and `Perimeter()` that every concrete subclass must implement, plus a `Describe()` method with a default implementation that subclasses may optionally replace. `Circle` (radius) and `Rectangle` (width, height) are concrete subclasses.
 
 ## Required classes and behavior
 
@@ -27,8 +27,8 @@ An `abstract class Shape` with `abstract double Area()`, `abstract double Perime
 
 ## Things to watch for
 
-- `abstract` methods have no body (no `{ }`). They must be overridden in every concrete subclass.
-- `abstract class` cannot be instantiated directly — `new Shape()` is a compile error.
+- Methods with no body must be overridden in every concrete subclass; the class containing them cannot be instantiated.
+- A class cannot be instantiated directly if it is declared with a specific C# keyword — `new Shape()` becomes a compile error.
 - `GetType().Name` inside Describe() returns the runtime type name (`"Circle"`, `"Rectangle"`), not `"Shape"`.
-- `virtual` (on Describe) provides a default implementation that subclasses may override but don't have to.
-- `abstract` vs `interface`: abstract classes can have state (fields/properties) and non-abstract methods; C# allows only one base class.
+- Methods with a default implementation that subclasses may optionally replace use a different keyword than those with no body at all.
+- Abstract classes can have state (fields/properties) and non-abstract methods; C# allows only one base class.

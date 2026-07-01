@@ -2,7 +2,7 @@
 
 ## Feature
 
-Indexers (`this[int row, int col]`), operator overloading (`+`, `*`, `==`, `!=`).
+Indexers and operator overloading — element access syntax and type-level arithmetic/comparison operations.
 
 ## Case study
 
@@ -23,8 +23,8 @@ Note: `+`, `*`, `==`, `!=` each require a specific C# keyword to declare as a ty
 
 ## Things to watch for
 
-- Indexer syntax: `public double this[int row, int col] { get => ...; set => ...; }`.
-- `operator +` must be `static` and return a new `Matrix` (don't mutate in place).
+- C# has a specific member syntax for element access that uses `this` with index parameters — look up how to declare an indexer for a multi-dimensional grid.
+- Operator methods must be declared with a specific keyword and are always static; they return a new instance (don't mutate).
 - If you define `==`, you must also define `!=` (and vice versa) — compiler error otherwise.
 - Override `Equals` and `GetHashCode` when overloading `==` — otherwise `==` and `Equals` have inconsistent behavior.
 - `Matrix + Matrix` requires same dimensions; throw if they don't match.

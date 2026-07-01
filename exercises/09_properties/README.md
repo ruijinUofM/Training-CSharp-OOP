@@ -2,11 +2,11 @@
 
 ## Feature
 
-Auto-properties, computed properties, backing fields with validation in setters, `private set`, `init`.
+Properties — auto-properties, computed properties, backing fields with validation in setters, and limiting write access to within the class or at construction time.
 
 ## Case study
 
-A `BankAccount` with an `Owner` (read-only), a `Balance` (validated — no negative balance), `Deposit`, and `Withdraw`. The setter is private; external code can only change balance through the public methods.
+A `BankAccount` with an `Owner` (read-only), a `Balance` (validated — no negative balance), `Deposit`, and `Withdraw`. The balance setter is private; external code can only change the balance through the public methods.
 
 ## Required class and behavior
 
@@ -19,8 +19,8 @@ A `BankAccount` with an `Owner` (read-only), a `Balance` (validated — no negat
 
 ## Things to watch for
 
-- `public decimal Balance { get; private set; }` — public getter, private setter. The value can only be changed from within the class.
+- C# lets you mix access modifiers on a property's getter and setter — think about how to make `Balance` publicly readable but only changeable from within the class.
 - Validation in the constructor is the right place to enforce invariants at creation time.
 - `ArgumentException` for bad arguments (negative deposit); `InvalidOperationException` for invalid state transitions (overdraft).
-- `init` accessors (C# 9+) allow a property to be set at construction time but become read-only afterward: `public string Owner { get; init; }`. Use `{ get; }` (getter-only with constructor assignment) for this exercise.
+- C# 9 introduced an accessor that allows a property to be set at construction time but become read-only afterward. For this exercise, use a getter-only property with assignment in the constructor instead.
 - Computed properties (no backing field needed): `public decimal Fee => Balance * 0.01m;`.

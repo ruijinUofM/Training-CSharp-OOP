@@ -2,10 +2,6 @@ using Xunit;
 
 // ref / out / in Parameters
 //
-// ref: caller initializes; method reads and writes caller's variable.
-// out: method must write before returning; caller doesn't need to initialize.
-// in:  read-only reference (avoids copy for large structs; cannot mutate).
-//
 // Implement (all in static class ParameterDemos):
 //   Swap(int a, int b) — exchanges the caller's two int variables in place.
 //       (Both parameters must let the method write back to the caller's variables.)

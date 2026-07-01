@@ -2,11 +2,11 @@
 
 ## Feature
 
-`where T : IComparable<T>`, `where T : class, new()`, `where T : struct` — type constraints that unlock capabilities inside generic methods/classes.
+Generic type constraints — restricting type parameters to unlock specific capabilities inside generic methods and classes.
 
 ## Case study
 
-A `Max<T>` method (requires `IComparable<T>`), a `Repository<T>` class (requires `class, new()`), and an `AreEqual<T>` method (requires `struct`).
+A `Max<T>` method (T must support comparison against itself), a `Repository<T>` class (T must be a reference type with a parameterless constructor), and an `AreEqual<T>` method (T must be a value type).
 
 ## Required classes and behavior
 
@@ -23,9 +23,9 @@ A `Max<T>` method (requires `IComparable<T>`), a `Repository<T>` class (requires
 
 ## Things to watch for
 
-- `where T : IComparable<T>` lets you call `a.CompareTo(b)` inside the method.
-- `where T : class` restricts to reference types (classes, interfaces, not `int`, `bool`).
-- `where T : new()` lets you call `new T()` inside the class without knowing the concrete type.
-- `where T : struct` restricts to value types — `int`, `double`, custom structs. Useful for `AreEqual` where boxing/null behavior differs.
-- Multiple constraints are ANDed: `where T : class, new()` means it must be BOTH a reference type AND have a parameterless constructor.
+- Constraining T to types that support comparison against themselves lets you call comparison methods on T values inside the method.
+- Constraining T to reference types restricts it to classes and interfaces (not `int`, `bool`, or structs).
+- Constraining T to have a parameterless constructor lets you call `new T()` inside the class without knowing the concrete type.
+- Constraining T to value types restricts it to types like `int`, `double`, and custom structs — useful where boxing or null behavior differs.
+- Multiple constraints are ANDed: T must satisfy ALL listed constraints simultaneously.
 - `a.CompareTo(b) > 0` means `a > b`.

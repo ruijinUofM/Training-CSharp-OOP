@@ -19,12 +19,12 @@ Extension methods — adding methods to existing types without modifying or inhe
   - `IsEven(int)` → bool — `n % 2 == 0`.
   - `Times(int)` → sequence of ints — yields 0, 1, …, n-1.
 
-Note: extension methods must live in a static class and use a special first-parameter syntax so they can be called as if they belonged to the extended type.
+Note: extension methods must live in a special class and use a specific first-parameter syntax so they can be called as if they belonged to the extended type.
 
 ## Things to watch for
 
-- Extension methods must be in a `static class` with `static` methods. The first parameter uses `this TypeName paramName`.
-- Called as `"hello".IsPalindrome()` even though they're defined as `IsPalindrome(this string s)`.
+- Extension methods live in a specific kind of class, and each method must also have a specific modifier. Look up what makes a class and its methods eligible to host extension methods.
+- The first parameter uses a specific syntax that tells the compiler to treat the method as belonging to that type — called as `"hello".IsPalindrome()` even though it's defined differently.
 - They can be called as regular static methods too: `StringExtensions.IsPalindrome("hello")`.
 - `IsPalindrome`: remove spaces, lower-case both sides, compare with `SequenceEqual` or `string.Reverse()`.
 - `Truncate`: if already short enough, return as-is; otherwise `s[..maxLength] + "..."`.

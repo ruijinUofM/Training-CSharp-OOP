@@ -13,13 +13,11 @@
 //               gets the string value of the property;
 //               if null or shorter than MinLength: adds "{PropertyName} is too short";
 //               if longer than MaxLength: adds "{PropertyName} is too long".
+//       (Look up the C# reflection API for reading properties and custom attributes at runtime.)
 //
 //   UserForm — example form class with two nullable string properties:
 //       Name — must be 2–50 characters.
 //       Email — must be 5–100 characters.
-//
-// Reflection workflow: typeof(T).GetProperties(), prop.GetCustomAttribute<ValidateAttribute>(),
-//   prop.GetValue(obj) as string.
 
 using System.Reflection;
 
