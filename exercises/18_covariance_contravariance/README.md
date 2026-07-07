@@ -4,6 +4,13 @@
 
 Generic variance — enabling type-safe assignment between related generic types (covariance and contravariance).
 
+## When to use it / When to avoid it
+
+Variance exists so generic interface/delegate assignments can respect the real subtyping relationship between their type arguments — a `Dog` producer really can stand in for an `Animal` producer, and the compiler can prove it's safe as long as `T` only flows one direction.
+
+- **Use it when**: designing a library-level generic interface or delegate where `T` appears in only output positions (`out T`, covariant — a "producer") or only input positions (`in T`, contravariant — a "consumer"), like `IEnumerable<T>` or `Action<T>`.
+- **Avoid it when**: `T` appears in both input and output positions on the same interface — it fundamentally can't be made variant, and trying to force it is a compile error. Also note that most day-to-day application code never needs to *declare* its own variant interface — this mostly matters when designing reusable, general-purpose APIs.
+
 ## Case study
 
 A covariant `IProducer<T>` (an `IProducer<Dog>` can be assigned to `IProducer<Animal>`) and a contravariant `IConsumer<T>` (an `IConsumer<Animal>` can be assigned to `IConsumer<Dog>`). Look up the C# type-parameter keywords that enable each direction.
@@ -28,6 +35,48 @@ A covariant `IProducer<T>` (an `IProducer<Dog>` can be assigned to `IProducer<An
 - **AnimalConsumer** — fulfills `IConsumer<Animal>`.
   - `Consumed` (List&lt;string&gt;) — tracks names of consumed animals.
   - `Consume(Animal)` — appends the animal's Name to Consumed.
+
+## Syntax hint
+
+<details>
+<summary>Click to reveal C# syntax</summary>
+
+```csharp
+class Animal { }
+class Dog : Animal { }
+
+// "out T" — covariant: T only ever comes OUT (return positions)
+interface IProducer<out T>
+{
+    T Produce();
+}
+
+// "in T" — contravariant: T only ever goes IN (parameter positions)
+interface IConsumer<in T>
+{
+    void Consume(T item);
+}
+
+class DogProducer : IProducer<Dog>
+{
+    public Dog Produce() => new Dog();
+}
+
+class AnimalConsumer : IConsumer<Animal>
+{
+    public void Consume(Animal a) { }
+}
+
+// covariance: a more-specific producer can be used where a less-specific one is expected
+IProducer<Animal> producer = new DogProducer();
+
+// contravariance: a less-specific consumer can be used where a more-specific one is expected
+IConsumer<Dog> consumer = new AnimalConsumer();
+
+// built-in examples: IEnumerable<out T>, Action<in T>
+```
+
+</details>
 
 ## Things to watch for
 

@@ -4,6 +4,13 @@
 
 Constructor injection, interface-based dependencies, test doubles (fakes).
 
+## When to use it / When to avoid it
+
+Dependency injection exists so a class depends on *what* it needs (an interface) rather than *how* that need is fulfilled (a concrete implementation) — the caller decides, which is what makes swapping in a fake for tests, or a different real implementation, possible without touching the class.
+
+- **Use it when**: a class depends on something with side effects, I/O, or more than one plausible implementation — email senders, repositories, clocks, HTTP clients.
+- **Avoid it when**: the dependency is a pure, stateless, deterministic helper that will realistically never vary or need faking (e.g. `Math` functions, string formatting) — injecting it adds constructor ceremony with no real flexibility gained.
+
 ## Case study
 
 `NotificationService` receives an `IEmailSender` via its constructor. `FakeEmailSender` captures messages for testing. `ConsoleEmailSender` writes to stdout for real use.
@@ -25,6 +32,47 @@ Constructor injection, interface-based dependencies, test doubles (fakes).
   - `NotifyUser(string email, string eventName)` — delegates to Send with:
     - Subject = `"Notification: {eventName}"`
     - Body = `"You have a new event: {eventName}"`
+
+## Syntax hint
+
+<details>
+<summary>Click to reveal C# syntax</summary>
+
+```csharp
+interface IThingDoer
+{
+    void DoThing(string input);
+}
+
+class FakeThingDoer : IThingDoer
+{
+    // named-tuple list — capture calls without a dedicated class
+    public List<(string Input, DateTime When)> Calls { get; } = new();
+
+    public void DoThing(string input) => Calls.Add((input, DateTime.Now));
+}
+
+class RealThingDoer : IThingDoer
+{
+    public void DoThing(string input) => Console.WriteLine($"doing: {input}");
+}
+
+class ConsumerService
+{
+    // "readonly" — assigned once via constructor, never reassigned after
+    private readonly IThingDoer _doer;
+
+    // constructor injection: caller decides which implementation to pass in
+    public ConsumerService(IThingDoer doer) { _doer = doer; }
+
+    public void Run(string input) => _doer.DoThing(input);
+}
+
+// caller picks the implementation — the class itself never "new"s one up
+var service = new ConsumerService(new FakeThingDoer());
+```
+
+</details>
 
 ## Things to watch for
 

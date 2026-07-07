@@ -4,6 +4,13 @@
 
 LINQ method syntax: `Where`, `Select`, `OrderBy`/`OrderByDescending`, `GroupBy`, `First`/`FirstOrDefault`, `Any`/`All`, `Sum`/`Average`, `Take`, `ToList`, `ToDictionary`.
 
+## When to use it / When to avoid it
+
+LINQ exists to let you describe *what* transformation you want over a collection (filter, project, group, aggregate) instead of *how* to loop and accumulate it by hand — and the same query syntax works whether the source is in-memory or translated to SQL (EF Core).
+
+- **Use it when**: filtering/mapping/aggregating in-memory collections, or building composable queries against a data source that translates the expression tree (like EF Core).
+- **Avoid it when**: you're in an extremely hot, allocation-sensitive loop where the iterator and lambda overhead actually shows up in profiling — a plain `for` loop can be meaningfully faster there. Also avoid chaining so many operators that the query becomes harder to read than the explicit loop it replaced.
+
 ## Case study
 
 `Product` record with Name, Category, Price, Stock. `ProductQueries` static class with methods that each perform a LINQ query.
@@ -20,6 +27,40 @@ LINQ method syntax: `Where`, `Select`, `OrderBy`/`OrderByDescending`, `GroupBy`,
   - `TotalValue(products)` → decimal — sum of Price * Stock across all products.
   - `GroupByCategory(products)` → `Dictionary<string, List<Product>>` — maps each category to its products.
   - `TopNByPrice(products, n)` — top N products by price (highest first).
+
+## Syntax hint
+
+<details>
+<summary>Click to reveal C# syntax</summary>
+
+```csharp
+record Item(string Name, string Category, decimal Price, int Stock);
+
+static class ItemQueries
+{
+    public static IEnumerable<Item> InStock(IEnumerable<Item> items)
+        => items.Where(i => i.Stock > 0);
+
+    public static IEnumerable<string> Names(IEnumerable<Item> items)
+        => items.Select(i => i.Name);
+
+    public static decimal TotalValue(IEnumerable<Item> items)
+        => items.Sum(i => i.Price * i.Stock);
+
+    // GroupBy → each group has a Key and is itself enumerable
+    public static Dictionary<string, List<Item>> GroupByCategory(IEnumerable<Item> items)
+        => items.GroupBy(i => i.Category)
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+    public static IEnumerable<Item> TopNByPrice(IEnumerable<Item> items, int n)
+        => items.OrderByDescending(i => i.Price).Take(n);
+}
+
+// method syntax chains left-to-right; LINQ is lazy until enumerated (.ToList(), foreach, etc.)
+var cheapNames = items.Where(i => i.Price < 10).Select(i => i.Name).ToList();
+```
+
+</details>
 
 ## Things to watch for
 

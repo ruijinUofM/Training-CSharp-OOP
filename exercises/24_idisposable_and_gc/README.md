@@ -19,6 +19,13 @@ public interface IDisposable
 
 Any class holding unmanaged resources implements `IDisposable.Dispose()` to release them deterministically.
 
+## When to use it / When to avoid it
+
+`IDisposable` exists specifically for resources the GC doesn't know how to release — file handles, sockets, native memory, database connections — giving you a deterministic point to clean them up instead of waiting on an unpredictable finalizer.
+
+- **Use it when**: a class directly holds an unmanaged resource, or holds (owns) another `IDisposable` — you must clean up in the former case and should propagate `Dispose()` in the latter.
+- **Avoid it when**: the class doesn't own any unmanaged resource or `IDisposable` member — implementing `IDisposable` "just in case" forces every consumer to remember `using`/`Dispose()` for a class that has nothing to actually release.
+
 ## The `using` statement
 
 `using` guarantees `Dispose()` is called even if an exception is thrown:
@@ -67,6 +74,41 @@ public class ManagedResource : IDisposable
     }
 }
 ```
+
+## Syntax hint
+
+<details>
+<summary>Click to reveal C# syntax</summary>
+
+```csharp
+public class Resource : IDisposable
+{
+    public bool IsDisposed { get; private set; }
+    public static List<string> Log { get; } = new();
+    public string Name { get; }
+
+    public Resource(string name) { Name = name; }
+
+    public void Dispose()
+    {
+        IsDisposed = true;
+        Log.Add($"disposed:{Name}");
+        GC.SuppressFinalize(this);   // skip the finalizer — we already cleaned up
+    }
+}
+
+// "using" guarantees Dispose() runs even if an exception is thrown inside the block
+using (var r = new Resource("a"))
+{
+    // r is in scope here
+}
+// r.Dispose() already ran
+
+// C# 8+ shorthand — disposed at end of enclosing scope, no braces needed
+using var r2 = new Resource("b");
+```
+
+</details>
 
 ## Required implementation
 

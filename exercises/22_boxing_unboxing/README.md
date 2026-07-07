@@ -27,9 +27,39 @@ int m = (int)obj; // unbox: copies the value out of the box
 3. Passing a value type where `object` is expected (e.g., `string.Format("{0}", 42)`).
 4. Calling `object` methods on a value type via an interface reference.
 
+## When it's fine vs. when to avoid it
+
+Boxing itself isn't a "feature" you opt into — it's a cost the runtime pays automatically whenever a value type needs to be treated as an `object`/interface reference. Knowing when that's happening is what lets you decide if it's acceptable.
+
+- **Acceptable when**: it's occasional, outside hot paths — interop with legacy non-generic APIs (`ArrayList`, older reflection-based code), or a one-off conversion that isn't repeated millions of times.
+- **Avoid it when**: you're in a hot loop or handling large collections of value types — reach for generics (`List<int>` instead of `ArrayList`) so the compiler never needs to box at all. If you see `object`, `IComparable` (non-generic), or a non-generic collection holding value types in a hot path, that's the signal to look for a generic alternative.
+
 ## Detecting boxing
 
 Use a profiler, or write a benchmark. At IL level, boxing emits the `box` opcode.
+
+## Syntax hint
+
+<details>
+<summary>Click to reveal C# syntax</summary>
+
+```csharp
+int n = 42;
+object boxed = n;          // box: value type copied onto the heap, wrapped as object
+int back = (int)boxed;     // unbox: copy the value back out; throws InvalidCastException on mismatch
+
+// boxing via a non-generic collection (each Add boxes the int)
+var arrayList = new System.Collections.ArrayList();
+arrayList.Add(42);
+
+// no boxing — generics store the actual int, not a boxed wrapper
+var list = new List<int> { 42 };
+
+Type t = boxed.GetType();      // typeof(int)
+bool isInt = boxed is int;     // pattern-match without unboxing
+```
+
+</details>
 
 ## Required implementation (all in static class BoxingDemos)
 

@@ -24,6 +24,13 @@ Most objects die young (short-lived allocations in loops). Collecting only Gen 0
 
 Objects ≥ **85,000 bytes** go directly to the LOH (skipping Gen 0/1). The LOH is collected only during Gen 2 GCs and is **not compacted by default** (gaps accumulate). Large arrays, strings, etc. → LOH.
 
+## When to use it / When to avoid it
+
+This is diagnostic/mental-model knowledge more than a feature you reach for directly, but it should shape a few concrete habits.
+
+- **Use this knowledge when**: deciding whether an allocation pattern is safe for a hot path — avoid frequent large (≥ 85,000 byte) allocations there (they skip straight to the LOH, which fragments and isn't compacted by default), and avoid creating unnecessary long-lived objects that get promoted into the more expensive Gen 2. Reach for `WeakReference<T>` specifically for caches where you want entries to be evictable under memory pressure automatically, rather than enforcing a manual size limit.
+- **Avoid it when**: you're tempted to call `GC.Collect()` manually in application code to "help" — the generational GC is tuned to do this better than manual intervention in almost all cases; forcing full collections defeats the generational optimization this whole model is built on.
+
 ## `WeakReference<T>`
 
 A weak reference allows you to hold a reference to an object without preventing it from being collected. Useful for caches.
@@ -39,6 +46,32 @@ else
     // collected — reload from source
 }
 ```
+
+## Syntax hint
+
+<details>
+<summary>Click to reveal C# syntax</summary>
+
+```csharp
+int gen = GC.GetGeneration(someObject);   // 0, 1, or 2
+
+GC.Collect();                             // force a full collection
+GC.WaitForPendingFinalizers();            // wait for finalizers to run
+GC.Collect();                             // second pass to reclaim finalized objects
+
+long bytes = GC.GetTotalMemory(forceFullCollection: true);
+
+// "where T : class" — WeakReference only makes sense for reference types
+static bool IsAlive<T>(WeakReference<T> wr) where T : class
+    => wr.TryGetTarget(out _);
+
+static WeakReference<T> MakeWeak<T>(T obj) where T : class
+    => new WeakReference<T>(obj);
+
+const int LohThresholdBytes = 85_000;     // objects at/above this size go straight to the LOH
+```
+
+</details>
 
 ## Required implementation (all in static class GcDemos)
 

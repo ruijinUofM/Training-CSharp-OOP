@@ -41,7 +41,9 @@ Passes a value type by reference to avoid copying without allowing mutation. Use
 void Print(in LargeStruct s) { Console.WriteLine(s.X); } // s cannot be mutated
 ```
 
-## When to use each
+## When to use it / When to avoid it
+
+These modifiers exist for the specific cases where returning a value isn't enough: you need to write back into the *caller's own variable* (`ref`), signal "the method guarantees to fill this in" (`out`, e.g. the `TryParse` pattern), or pass a large value type without copying it while promising not to mutate it (`in`).
 
 | Modifier | Caller initializes? | Method writes? | Method reads? | Use case |
 |----------|---------------------|---------------|---------------|----------|
@@ -49,6 +51,40 @@ void Print(in LargeStruct s) { Console.WriteLine(s.X); } // s cannot be mutated
 | `ref`    | must | yes | yes | swap, accumulate |
 | `out`    | doesn't have to | must | not required | multi-return, TryParse pattern |
 | `in`     | must | no | yes | large struct — avoid copy |
+
+- **Use them when**: you need one of the specific behaviors above and there's no cleaner alternative — `TryParse`-style APIs (`out`) or genuinely large structs on a hot path (`in`).
+- **Avoid them when**: a normal return value, a tuple, or a small record would do the job — `ref`/`out` parameters are harder to use with LINQ, async, and lambdas, and make call sites less obvious than `var result = DoSomething()`. Reach for these modifiers only when the alternative is clearly worse.
+
+## Syntax hint
+
+<details>
+<summary>Click to reveal C# syntax</summary>
+
+```csharp
+// "ref" — caller must initialize; method can read AND write the caller's variable
+static void Swap(ref int a, ref int b)
+{
+    int tmp = a;
+    a = b;
+    b = tmp;
+}
+int x = 1, y = 2;
+Swap(ref x, ref y);
+
+// "out" — caller doesn't need to initialize; method MUST assign before returning
+static bool TryDouble(string s, out int result)
+{
+    if (int.TryParse(s, out int parsed)) { result = parsed * 2; return true; }
+    result = 0;
+    return false;
+}
+if (TryDouble("21", out int doubled)) { /* use doubled */ }
+
+// "in" — read-only reference; avoids copying a (large) struct, cannot mutate it
+static int ReadOnly(in int value) => value * 2;
+```
+
+</details>
 
 ## Required implementation (all in static class ParameterDemos)
 

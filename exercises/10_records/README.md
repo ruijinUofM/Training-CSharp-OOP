@@ -4,6 +4,13 @@
 
 Records — immutable data types with auto-generated value equality, `ToString`, and deconstruction — for both reference and value variants, plus non-destructive mutation.
 
+## When to use it / When to avoid it
+
+Records exist for data that's defined entirely by its contents — two `Point(1, 2)`s are simply *the same value* — with immutability by default so instances can be shared and compared safely, and `with`-expressions for producing modified copies without mutation bugs.
+
+- **Use it when**: modeling DTOs, value objects, or message/event payloads where "same data = same thing" is the correct notion of equality, and you want compact syntax for equality/`ToString`/deconstruction.
+- **Avoid it when**: modeling entities with an identity that persists across changes (e.g. a database row tracked by its ID, where two instances with the same current field values might still be different rows, or one row's data changes over time but it's still "the same" entity) — reference-equality classes fit that concept better. Also avoid records for very large, frequently mutated objects on hot paths — copy-on-write semantics add allocation overhead a mutable class wouldn't have.
+
 ## Case study
 
 `Point(X, Y)` — a record with a `DistanceTo` method. `Color(R, G, B)` — a value-type record with a `ToHex()` method.
@@ -21,6 +28,36 @@ Records — immutable data types with auto-generated value equality, `ToString`,
   - `ToHex()` → string — returns `"#RRGGBB"` in uppercase hex.
 
 Note: look up the C# syntax for declaring immutable data types with auto-generated equality, `ToString`, and deconstruction — for both reference and value variants.
+
+## Syntax hint
+
+<details>
+<summary>Click to reveal C# syntax</summary>
+
+```csharp
+// reference-type record: positional syntax auto-generates constructor,
+// init-only properties, value-based Equals/GetHashCode/ToString, Deconstruct
+record Point(double X, double Y)
+{
+    public double DistanceTo(Point other)
+        => Math.Sqrt(Math.Pow(X - other.X, 2) + Math.Pow(Y - other.Y, 2));
+}
+
+// value-type record — same features, but Point2 is a struct, not a class
+record struct Point2(double X, double Y);
+
+var a = new Point(1, 2);
+var b = new Point(1, 2);
+bool equal = a == b;                 // true — value equality, not reference equality
+
+// non-destructive mutation: "with" makes a copy, changing only listed properties
+var c = a with { Y = 99 };
+
+// deconstruction — works automatically for records
+var (x, y) = a;
+```
+
+</details>
 
 ## Things to watch for
 

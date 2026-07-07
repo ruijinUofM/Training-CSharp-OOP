@@ -34,6 +34,13 @@ public readonly struct Point
 }
 ```
 
+## When to use it / When to avoid it
+
+`readonly struct` exists to make the compiler *prove* a value type is immutable, which both prevents the mutable-struct gotcha above and removes the need for defensive copies when the struct is passed by `in`.
+
+- **Use it when**: the struct is small, genuinely represents an immutable value (a coordinate, a color, a money amount), and especially when it's passed around frequently via `in` on a hot path — that's where skipping defensive copies actually pays off.
+- **Avoid it when**: the type needs to mutate in place — that's most stateful, "changes over time" modeling, and belongs on a class (or a plain mutable struct used very carefully, if at all). Also don't bother with `in`/`readonly struct` for tiny structs (int-sized or smaller) — copying them is already as cheap as passing a reference, so the ceremony buys you nothing.
+
 ## Performance: `in` + `readonly struct`
 
 Passing a large `readonly struct` via `in` is zero-copy and zero defensive-copy:
@@ -41,6 +48,41 @@ Passing a large `readonly struct` via `in` is zero-copy and zero defensive-copy:
 void Process(in BigReadonlyStruct s) { ... }
 ```
 Without `readonly`, the compiler inserts a defensive copy on each `in` parameter access, defeating the purpose.
+
+## Syntax hint
+
+<details>
+<summary>Click to reveal C# syntax</summary>
+
+```csharp
+// "readonly struct" — compiler enforces every field/auto-property is immutable
+public readonly struct Vector2
+{
+    public double X { get; }
+    public double Y { get; }
+
+    public Vector2(double x, double y)
+    {
+        X = x;
+        Y = y;
+    }
+
+    public double Length => Math.Sqrt(X * X + Y * Y);
+
+    // methods return a NEW instance instead of mutating "this"
+    public Vector2 Add(Vector2 other) => new Vector2(X + other.X, Y + other.Y);
+    public Vector2 Scale(double factor) => new Vector2(X * factor, Y * factor);
+
+    public bool Equals(Vector2 other) => X == other.X && Y == other.Y;
+
+    public static Vector2 Zero => new Vector2(0, 0);
+}
+
+// "in" + "readonly struct" together = zero-copy, no defensive copy needed
+static void PrintLength(in Vector2 v) => Console.WriteLine(v.Length);
+```
+
+</details>
 
 ## Required implementation
 

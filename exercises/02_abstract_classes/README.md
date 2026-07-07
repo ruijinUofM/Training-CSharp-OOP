@@ -4,6 +4,13 @@
 
 Abstract base classes — classes that cannot be instantiated directly, methods with no implementation that concrete subclasses must provide, and optional methods with a default implementation.
 
+## When to use it / When to avoid it
+
+An abstract class exists for the case where subclasses are the same *kind* of thing, share real implementation, but also each must supply a piece that only they know how to do (e.g. every `Shape` can `Describe()` itself the same way, but only `Circle` knows its own `Area()`).
+
+- **Use it when**: you have common state or logic to share across subclasses AND you want to force every subclass to implement specific members, and instantiating the base type directly wouldn't make sense (there's no such thing as a bare "Shape").
+- **Avoid it when**: unrelated classes only need to agree on a contract with no shared code to reuse — an `interface` is the better fit there, and it doesn't spend your one allowed base class. Also avoid it if you find yourself wanting more than one "abstract base" for a type — C# only allows single inheritance, so a rigid abstract-class hierarchy can back you into a corner that composition or interfaces would have avoided.
+
 ## Case study
 
 A `Shape` base class that cannot be instantiated directly. It declares `Area()` and `Perimeter()` that every concrete subclass must implement, plus a `Describe()` method with a default implementation that subclasses may optionally replace. `Circle` (radius) and `Rectangle` (width, height) are concrete subclasses.
@@ -24,6 +31,37 @@ A `Shape` base class that cannot be instantiated directly. It declares `Area()` 
   - `Width`, `Height` (double) — read-only; set via constructor.
   - `Area()` — `Width * Height`.
   - `Perimeter()` — `2 * (Width + Height)`.
+
+## Syntax hint
+
+<details>
+<summary>Click to reveal C# syntax</summary>
+
+```csharp
+abstract class Base
+{
+    // no body, no implementation — every concrete subclass MUST override this
+    public abstract double DoThing();
+
+    // has a body — subclasses MAY override it, but don't have to
+    public virtual string Describe() => $"I am a {GetType().Name} doing {DoThing():F2}";
+}
+
+// "abstract class Base" itself cannot be instantiated: new Base() is a compile error
+
+class Concrete : Base
+{
+    public double Value { get; }
+    public Concrete(double value) { Value = value; }
+
+    // required — the class won't compile without this
+    public override double DoThing() => Value * 2;
+
+    // optional — inherits Base.Describe() if omitted
+}
+```
+
+</details>
 
 ## Things to watch for
 

@@ -4,6 +4,13 @@
 
 `async` / `await`, `Task<T>`, `Task.WhenAll`, `CancellationToken`, `OperationCanceledException`.
 
+## When to use it / When to avoid it
+
+`async`/`await` exists to keep threads free while waiting on I/O (network, disk, timers) instead of blocking them idle — critical for scalability under load (a blocked thread can't serve other requests).
+
+- **Use it when**: the operation is I/O-bound — HTTP calls, database queries, file access, or anywhere you'd otherwise call a blocking wait.
+- **Avoid it when**: the work is CPU-bound — `async`/`await` doesn't parallelize computation by itself; use `Task.Run`/parallelism for that instead. Also avoid marking a method `async` "for consistency" when it wraps trivial synchronous logic — every `async` method pays for a compiler-generated state machine and `Task` allocation even if nothing ever actually suspends.
+
 ## Case study
 
 Async helper methods that simulate I/O with `Task.Delay`: `FetchDataAsync`, `SumAsync`, `FetchAllAsync` (parallel), and `FetchWithCancellationAsync`.
@@ -23,6 +30,42 @@ Async helper methods that simulate I/O with `Task.Delay`: `FetchDataAsync`, `Sum
   Waits 100ms respecting the cancellation token; if cancelled, the cancellation exception propagates naturally; otherwise returns `"Data for {id}"`.
 
 Note: methods that perform work asynchronously use specific C# keywords for the method signature and for suspending execution. Look them up if unsure.
+
+## Syntax hint
+
+<details>
+<summary>Click to reveal C# syntax</summary>
+
+```csharp
+static class Helpers
+{
+    // "async" + returns Task<T> — await-able, runs asynchronously
+    public static async Task<string> FetchAsync(string id, int delayMs = 10)
+    {
+        await Task.Delay(delayMs);   // yields the thread instead of blocking it
+        return $"Data for {id}";
+    }
+
+    // launching several async calls concurrently, then waiting for all of them
+    public static async Task<string[]> FetchAllAsync(string[] ids)
+    {
+        var tasks = ids.Select(id => FetchAsync(id)).ToArray();
+        return await Task.WhenAll(tasks);
+    }
+
+    // respecting a CancellationToken
+    public static async Task<string> FetchWithCancellationAsync(string id, CancellationToken ct)
+    {
+        await Task.Delay(100, ct);   // throws OperationCanceledException if ct is cancelled
+        return $"Data for {id}";
+    }
+}
+
+// calling into async code
+string result = await Helpers.FetchAsync("42");
+```
+
+</details>
 
 ## Things to watch for
 

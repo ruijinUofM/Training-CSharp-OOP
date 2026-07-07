@@ -4,6 +4,13 @@
 
 Generic classes (`class Foo<T>`), multiple type parameters (`Foo<T, U>`), type safety without boxing.
 
+## When to use it / When to avoid it
+
+Generics exist so you can write one implementation of a container or algorithm that works for any type, safely, without casting, without boxing value types, and without duplicating code per type.
+
+- **Use it when**: the logic is genuinely type-independent — a stack, a list, a repository — and you'd otherwise be tempted to write it once with `object` (losing type safety and paying boxing costs) or copy-paste it per concrete type.
+- **Avoid it when**: the code only ever needs to work with one concrete type — adding a type parameter there is pure ceremony with no reuse benefit. Also avoid piling on many type parameters "for flexibility" if callers only ever use one or two combinations — it hurts readability more than it helps.
+
 ## Case study
 
 A typed `Stack<T>` (LIFO) and a `Pair<T, U>` with a `Swap()` method.
@@ -22,6 +29,46 @@ A typed `Stack<T>` (LIFO) and a `Pair<T, U>` with a `Swap()` method.
   - `Second` — the second value; read-only.
   - Constructor — takes first and second values.
   - `Swap()` → Pair — returns a new Pair with First and Second swapped (with the type parameters also swapped).
+
+## Syntax hint
+
+<details>
+<summary>Click to reveal C# syntax</summary>
+
+```csharp
+class Box<T>
+{
+    private readonly List<T> _items = new();
+
+    public void Add(T item) => _items.Add(item);
+
+    public T GetLast() => _items[^1];   // ^1 = "last element" index-from-end
+
+    public int Count => _items.Count;
+}
+
+// two independent type parameters
+class Pair<TFirst, TSecond>
+{
+    public TFirst First { get; }
+    public TSecond Second { get; }
+
+    public Pair(TFirst first, TSecond second)
+    {
+        First = first;
+        Second = second;
+    }
+
+    // returning a re-specialized generic type with the parameters swapped
+    public Pair<TSecond, TFirst> Swap() => new(Second, First);
+}
+
+// usage — no casting, distinct types at compile time
+var box = new Box<int>();
+var pair = new Pair<string, int>("age", 30);
+```
+
+</details>
 
 ## Things to watch for
 

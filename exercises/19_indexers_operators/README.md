@@ -4,6 +4,13 @@
 
 Indexers and operator overloading — element access syntax and type-level arithmetic/comparison operations.
 
+## When to use it / When to avoid it
+
+Indexers and operator overloading exist to let a type use the same syntax as the domain concept it models — `matrix[r, c]` for element access, `a + b` for vectors/money/matrices — so code reads like the math or the collection it represents.
+
+- **Use it when**: the type genuinely behaves like a collection (an indexer) or has well-understood, unambiguous arithmetic/comparison semantics in its domain (vectors, complex numbers, money).
+- **Avoid it when**: the operator's meaning would surprise a reader — e.g. `+` that mutates instead of returning a new value, or that doesn't correspond to real addition. If the operation isn't a natural, obvious fit for operator syntax, a clearly named method (`matrix.Add(other)`) communicates intent better than forcing it onto `+`.
+
 ## Case study
 
 A `Matrix` class backed by a 2D array. Supports element access via indexer, addition (`+`), scalar multiplication (`*`), and equality comparison (`==`, `!=`).
@@ -20,6 +27,59 @@ A `Matrix` class backed by a 2D array. Supports element access via indexer, addi
   - `Equals(object?)` and `GetHashCode()` — must be overridden to match the `==` behavior.
 
 Note: `+`, `*`, `==`, `!=` each require a specific C# keyword to declare as a type-level operation rather than an instance method.
+
+## Syntax hint
+
+<details>
+<summary>Click to reveal C# syntax</summary>
+
+```csharp
+class Grid
+{
+    private readonly double[,] _data;
+    public int Rows { get; }
+    public int Cols { get; }
+
+    public Grid(int rows, int cols)
+    {
+        Rows = rows;
+        Cols = cols;
+        _data = new double[rows, cols];
+    }
+
+    // indexer — "this[...]" instead of a method/property name
+    public double this[int row, int col]
+    {
+        get => _data[row, col];
+        set => _data[row, col] = value;
+    }
+
+    // operator overloads — always "public static", named "operator <symbol>"
+    public static Grid operator +(Grid a, Grid b)
+    {
+        var result = new Grid(a.Rows, a.Cols);
+        for (int r = 0; r < a.Rows; r++)
+            for (int c = 0; c < a.Cols; c++)
+                result[r, c] = a[r, c] + b[r, c];
+        return result;
+    }
+
+    public static Grid operator *(Grid g, double scalar) => g;   // scale elements...
+
+    // "==" requires "!=" too, plus Equals/GetHashCode overrides for consistency
+    public static bool operator ==(Grid a, Grid b) => true;   // compare elements...
+    public static bool operator !=(Grid a, Grid b) => !(a == b);
+    public override bool Equals(object? obj) => obj is Grid g && this == g;
+    public override int GetHashCode() => HashCode.Combine(Rows, Cols);
+}
+
+// usage
+var g = new Grid(2, 2);
+g[0, 1] = 5.0;
+var sum = g + g;
+```
+
+</details>
 
 ## Things to watch for
 
